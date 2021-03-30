@@ -21,7 +21,7 @@ gem 'jbuilder', '~> 2.7'
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-
+gem 'ffi', github: 'ffi/ffi', submodules: true
 # Use Active Storage variant
 gem 'image_processing'
 gem 'ruby-vips'

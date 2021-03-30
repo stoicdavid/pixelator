@@ -7,9 +7,9 @@
     <%= csp_meta_tag %>
 
 
-<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'  %>
-<%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'  %>
-<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+	<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'  %>
+	<%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'  %>
+
   </head>
 
   <body>
@@ -51,7 +51,11 @@
 	  
 	  
 	  <main class="container">
-
+<% flash.each do |type, msg| %>
+  <div class="alert">
+    <%= msg %>
+  </div>
+<% end %>
 	    <div class="starter-template text-center py-5 px-3">
 	      <h1>Pixelator</h1>
     <%= yield %>

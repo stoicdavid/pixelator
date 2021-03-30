@@ -43,7 +43,7 @@ class PicturesController < ApplicationController
     @picture = Picture.create(params.require(:picture).permit(:image))
 
     respond_to do |wants|
-      if @picture.save
+      if @picture.save!
         flash[:notice] = 'Picture was successfully created.'
         wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
         wants.xml  { render :xml => @picture, :status => :created, :location => @picture }
@@ -59,14 +59,20 @@ class PicturesController < ApplicationController
   def update
     @picture = Picture.find params[:id]
     variation = @picture.variations.build(picture_params)
-    variation.pdi_filter(params[:picture][:variation][:filter_type])
+    filter = params[:picture][:variation][:filter_type]
+    bright = params[:picture][:variation][:bright_param]
+    mwidth = params[:picture][:variation][:mwidth_param]
+    mheight = params[:picture][:variation][:mheight_param] 
+
+    variation.pdi_filter(filter,bright,mwidth,mheight)
+
     respond_to do |wants|
       if @picture.update(picture_params)
         flash[:notice] = 'Picture was successfully updated.'
         wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
         wants.xml  { head :ok }
       else
-        wants.html { render :action => "edit" }
+        wants.html { redirect_to(:controller=>'welcome',:action =>:index)}
         wants.xml  { render :xml => @picture.errors, :status => :unprocessable_entity }
       end
     end
@@ -75,10 +81,12 @@ class PicturesController < ApplicationController
   # DELETE /pictures/1
   # DELETE /pictures/1.xml
   def destroy
+    @picture = Picture.find(params[:id])
+    @picture.image.purge
     @picture.destroy
 
     respond_to do |wants|
-      wants.html { redirect_to(pictures_url) }
+      wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
       wants.xml  { head :ok }
     end
   end

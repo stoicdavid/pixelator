@@ -9,7 +9,7 @@ class WelcomeController < ApplicationController
     end
     
     if @picture.variations.exists?
-      @variation = @picture.variations.last(2).first
+      @variation = @picture.variations.find_by(id:params[:id]) || @picture.variations.last(2).first
     end
     
     respond_to do |wants|

@@ -5,10 +5,11 @@
 	    <div class="col">
 		  <div class="form-group">
 		  	<% if @picture.image.attached? %>
-				<%= image_tag @picture.image %>
+				<%= image_tag @picture.image, class:"img-fluid rounded mx-auto d-block" %>
+				<%= button_to 'Delete', @picture, method: :delete, data: {remote: true, confirm: "Are you sure?"} if @picture.image.attached?%>
 			<% else %>
 		  
-        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
 			<title>Carga una imagen</title>
 			<rect width="100%" height="100%" fill="#eee"/>
 			<text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
@@ -19,18 +20,30 @@
 		<%= f.submit %>
 		<% end %>		
 		<% end %>
-      </div>
+		  </div>
 	  
 	    </div>
+	 	<div class="col">
+        <h6>Aplica algunos filtros</h6>
+		  	<% if @picture.image.attached?%>
+				<%= form_with model: @picture do |form| %>
+				Filtros
+					<%= form.fields_for :variation do |f| %>
+						<%= f.select :filter_type, @picture.remaining_filters.collect.with_index %>						
+						<%= f.range_field :bright_param, :in => 0..255, :step => 1 %>
+						<%= f.label :mwidth_param, "Ancho mosaico - Recomendado 10 a 100"  %>
+						<div><%= f.text_field :mwidth_param %></div>
+						<%= f.label :mwidth_param, "Alto mosaico - Recomendado 10 a 100"  %>
+						<div><%= f.text_field :mheight_param %></div>
+					<% end %>
+					<%= form.submit %>
+				<% end %>
+			<% end %>	
+		</div>
 	    <div class="col">
 		  	<% if @picture.variations.exists? %>
-				<%= image_tag @variation.image %>
-				<% if (@picture.variations.size>1) %>
-					<h3>Filtros aplicados</h3>
-					<% @picture.variations.each do |variation| %>
-						<h5><%= variation.filter_type %></h5>
-					<% end %>
-				<% end %>
+				<%= image_tag @variation.image, class:"img-fluid rounded mx-auto d-block" %>
+				<p>Filtro aplicado:<%= @variation.filter_type %></p>
 			<% else %>			
 	        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
 				<title>Carga una imagen</title>
@@ -39,24 +52,27 @@
 			</svg>
 			<% end %>
 	    </div>
-	  </div>
-	  <div class="row">
-
-        <h2>Aplica algunos filtros</h2>
-
-		  	<% if @picture.image.attached?%>
-				<%= form_with model: @picture do |form| %>
-				Filtros
-					<%= form.fields_for :variation do |f| %>
-						<%= f.select :filter_type, @picture.remaining_filters.collect.with_index %>
-						
-					<% end %>
-					<%= form.submit %>
+	</div>
+	
+	<div class="row">
+	  	
+		<% if (@picture.variations.size>1) %>
+			<h3>Filtros previamente aplicados</h3>
+			<% @picture.variations.each do |variation| %>
+			<div class="col">
+				<p><%# link_to image_tag(variation.image.variant(resize_to_fit:[100,100]),class:"img-thumbnail"),controller:'welcome',id:variation.id if variation.image.attached?%></p>
+				<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"btn btn-primary" if variation.image.attached?  %>
+				<% unless variation.bright_param.nil? %>
+				<%= variation.bright_param %>
 				<% end %>
-			<% end %>	
+				<%= button_to 'Delete', variation, method: :delete, class:"btn btn-danger", data: {remote: true, confirm: "Are you sure?"} if variation.image.attached?%>
+			</div>
+			<% end %>
 
-
+		<% end %>
+		
 	  </div>
+    
 
 
-    <hr class="featurette-divider">
+  	<hr class="featurette-divider">
