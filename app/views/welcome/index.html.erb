@@ -1,78 +1,223 @@
 <!-- inside app/views/welcome/index.html.erb -->  
 
+	<div class="col">
+		<% if (@picture.variations.size>1) %>
+			<h5>Filtros previamente aplicados</h5>
+				<% @picture.variations.in_groups_of(9,false).map do |group| %>
+					<div class='row'>
+						<% group.each do |variation| %>
+							<div class="col">
+								<% if @variation.filter_type == variation.filter_type %>
+								<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"btn btn-outline-primary btn-sm active" if variation.image.attached? %>
+								<% else %>
+								<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"btn btn-outline-primary btn-sm" if variation.image.attached? %>								
+								<% end %>
+								<%= link_to icon("trash"), variation, method: :delete, class:"btn btn-outline-danger btn-sm", data: {remote: true, confirm: "Are you sure?"} if variation.image.attached?%>
+							</div>
+						<% end %>
+						</div>
+				<% end %>
+		<% end %>
+	</div>
+  	<hr class="featurette-divider">
+<div class="row">
+	
+    <div class="col">
+	  <div class="form-group">
+	  	<% if @picture.image.attached? %>
+			<%= image_tag @picture.image, class:"img-fluid rounded mx-auto d-block" %>
+			<%= link_to icon("trash"), @picture, method: :delete, data: {remote: true, confirm: "Are you sure?"},class: 'btn btn-outline-danger' if @picture.image.attached?%>
+		<% else %>
+	  
+    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+		<title>Carga una imagen</title>
+		<rect width="100%" height="100%" fill="#eee"/>
+		<text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
+	</svg>
+	<%= form_with model: @picture do |f| %>
+	<%= f.label :image %>
+	<%= f.file_field :image, class: "form-control" %>
+	<%= f.submit %>
+	<% end %>		
+	<% end %>
+	  </div>
+  
+    </div>
 
-	<div class="row">
-	    <div class="col">
-		  <div class="form-group">
-		  	<% if @picture.image.attached? %>
-				<%= image_tag @picture.image, class:"img-fluid rounded mx-auto d-block" %>
-				<%= button_to 'Delete', @picture, method: :delete, data: {remote: true, confirm: "Are you sure?"} if @picture.image.attached?%>
-			<% else %>
-		  
-        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <div class="col">
+	  	<% if @picture.variations.exists? %>
+			<%= image_tag @variation.image, class:"img-fluid rounded mx-auto d-block" %>
+			<p>Filtro aplicado:<%= @variation.filter_type %></p>
+		<% else %>			
+        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
 			<title>Carga una imagen</title>
 			<rect width="100%" height="100%" fill="#eee"/>
 			<text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
 		</svg>
-		<%= form_with model: @picture do |f| %>
-		<%= f.label :image %>
-		<%= f.file_field :image, class: "form-control" %>
-		<%= f.submit %>
-		<% end %>		
 		<% end %>
-		  </div>
-	  
-	    </div>
-	 	<div class="col">
-        <h6>Aplica algunos filtros</h6>
+    </div>
+</div>
+	
+	  	<hr class="featurette-divider">
+<div class="row">
+
+	<div class='col'>
+	    <h6>Filtros escala de grises</h6>
+		  	<% if @picture.image.attached?%>
+				<%= form_with model: @picture do |form| %>							
+					<%= form.fields_for :variation do |f| %>
+						<% Variation::FILTER_TYPES[0..8].in_groups_of(3).each do |group| %>
+							<div class="row">
+								<div class="col">
+									<% group.each do |filter| %>
+										<% if @picture.remaining_filters.include? filter %>
+											<%= f.hidden_field :filter_type, value: filter %>
+											<%=form.submit filter, class:"btn btn-outline-primary"  %>
+										<% else %>
+											<%= f.hidden_field :filter_type, value: filter %>
+											<%=form.submit filter, disabled: true, class:"btn btn-outline-secondary"  %>
+										<% end %>
+									<% end %>
+								</div>
+							</div>
+						<% end %>
+					<% end %>
+				<% end %>
+			<% end %>
+	</div>
+	<div class='col'>
+	    <h6>Filtro Brillo y Mosaico</h6>
 		  	<% if @picture.image.attached?%>
 				<%= form_with model: @picture do |form| %>
-				Filtros
+						<div class='row mb-5'>
 					<%= form.fields_for :variation do |f| %>
-						<%= f.select :filter_type, @picture.remaining_filters.collect.with_index %>						
-						<%= f.range_field :bright_param, :in => 0..255, :step => 1 %>
-						<%= f.label :mwidth_param, "Ancho mosaico - Recomendado 10 a 100"  %>
-						<div><%= f.text_field :mwidth_param %></div>
-						<%= f.label :mwidth_param, "Alto mosaico - Recomendado 10 a 100"  %>
-						<div><%= f.text_field :mheight_param %></div>
+							<div class='col '>
+								<%= f.label "Brillo (0-255)", class: 'form-label' %>
+								<div class='row mb-5'>
+									<%= f.range_field :bright_param, :in => 0..255, :step => 1, class:'form-range' %>
+								</div>
+								<div class='row mb-5 justify-content-center'>
+									<%= f.submit 'Aplica Brillo', value: 'Brillo', class: 'btn btn-outline-primary col-sm-6 ' %>
+								</div>									
+							</div>
+							<div class='col'>
+								<div class='row mb-3 justify-content-left align-items-center'>
+									<%= f.label :mwidth_param, "Ancho", class: 'col-sm-5 col-form-label'  %>
+									<div class='col-sm-7'>
+										<%= f.text_field :mwidth_param, class: 'form-control' %>
+									</div>
+								</div>
+								<div class='row mb-5 justify-content-left'>									
+									<%= f.label :mwidth_param, "Alto", class: 'col-sm-3 col-form-label'  %>
+									<div class='col-sm-7'>
+										<%= f.text_field :mheight_param, class: 'form-control' %>
+									</div>
+									<div class='row mb-5 justify-content-center align-items-center'>
+										<%= f.submit 'Mosaico', class: 'btn btn-outline-primary col-sm-9 align-self-end'%>
+									</div>
+								</div>
+							</div>
 					<% end %>
-					<%= form.submit %>
+						</div>
 				<% end %>
-			<% end %>	
-		</div>
-	    <div class="col">
-		  	<% if @picture.variations.exists? %>
-				<%= image_tag @variation.image, class:"img-fluid rounded mx-auto d-block" %>
-				<p>Filtro aplicado:<%= @variation.filter_type %></p>
-			<% else %>			
-	        <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
-				<title>Carga una imagen</title>
-				<rect width="100%" height="100%" fill="#eee"/>
-				<text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
-			</svg>
+
 			<% end %>
-	    </div>
+
+	</div>	
+	<div class='col'>
+	    <h6>Filtro Alto Contraste e Inverso</h6>
+		  	<% if @picture.image.attached?%>
+				<%= form_with model: @picture do |form| %>
+						<div class='row mb-3'>
+					<%= form.fields_for :variation do |f| %>
+							<div class='col'>
+								<div class='row mb-5 justify-content-center'>
+									<% if @picture.remaining_filters.include? 'Alto Contraste' %>
+										<%= f.hidden_field :filter_type => 'Alto Contraste' %>
+										<%= form.submit 'Alto Contraste', value: 'Alto Contraste', class: 'btn btn-outline-primary col-sm-6' %>
+									<% else %>
+										<%= f.hidden_field :filter_type => 'Alto Contraste' %>
+										<%= form.submit 'Alto Contraste',disabled:true, value: 'Alto Contraste', class: 'btn btn-outline-primary col-sm-6'%>	
+									<% end %>									
+								</div>									
+
+									<div class='row mb-5 justify-content-center align-items-center'>
+									<% if @picture.remaining_filters.include? 'Inverso' %>										
+										<%= form.submit 'Inverso', class: 'btn btn-outline-primary col-sm-5 align-self-end'%>
+									<% else %>
+										<%= form.submit 'Inverso', disabled:true, class: 'btn btn-outline-primary col-sm-5 align-self-end'%>
+									<% end %>
+									</div>
+							</div>
+					<% end %>
+						</div>
+				<% end %>
+
+			<% end %>
+
 	</div>
-	
-	<div class="row">
-	  	
-		<% if (@picture.variations.size>1) %>
-			<h3>Filtros previamente aplicados</h3>
-			<% @picture.variations.each do |variation| %>
-			<div class="col">
-				<p><%# link_to image_tag(variation.image.variant(resize_to_fit:[100,100]),class:"img-thumbnail"),controller:'welcome',id:variation.id if variation.image.attached?%></p>
-				<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"btn btn-primary" if variation.image.attached?  %>
-				<% unless variation.bright_param.nil? %>
-				<%= variation.bright_param %>
+	<div class='col'>
+	    <h6>Filtro Componente RGB</h6>
+		  	<% if @picture.image.attached?%>
+				<%= form_with model: @picture do |form| %>
+						<div class='row mb-3'>
+					<%= form.fields_for :variation do |f| %>
+							<div class='col'>
+								<div class='row mb-3 justify-content-center align-items-center'>
+									<%= f.label :red, class: 'col-sm-3 col-form-label'  %>
+									<div class='col-sm-5'>
+										<%= f.range_field :red, :in => 0..255, :step => 1, class:'form-range' %>
+									</div>
+								</div>
+								<div class='row mb-3 justify-content-center align-items-center'>
+									<%= f.label :green, class: 'col-sm-3 col-form-label'  %>
+									<div class='col-sm-5'>
+										<%= f.range_field :green, :in => 0..255, :step => 1, class:'form-range' %>
+									</div>
+								</div>
+								<div class='row mb-3 justify-content-center align-items-center'>
+									<%= f.label :blue, class: 'col-sm-3 col-form-label'  %>
+									<div class='col-sm-5'>
+										<%= f.range_field :blue, :in => 0..255, :step => 1, class:'form-range' %>
+									</div>
+								</div>
+
+									<% if @picture.remaining_filters.include? 'Componente RGB' %>
+									<%= f.submit 'Componente RGB', value: 'Componente RGB', class: 'btn btn-outline-primary col-md-8' %>
+									<% else %>
+									<%= f.submit 'Componente RGB',disabled:true, value: 'Componente RGB', class: 'btn btn-outline-primary col-md-8' %>
+									<% end %>									
+							</div>
+
+					<% end %>
+						</div>
 				<% end %>
-				<%= button_to 'Delete', variation, method: :delete, class:"btn btn-danger", data: {remote: true, confirm: "Are you sure?"} if variation.image.attached?%>
-			</div>
+
 			<% end %>
 
-		<% end %>
-		
-	  </div>
-    
+	</div>
+	<div class='col'>
+	    <h6>Filtros de convolución</h6>
+		  	<% if @picture.image.attached?%>
+				<%= form_with model: @picture do |form| %>							
+					<%= form.fields_for :variation do |f| %>
+							<div class="row">
+								<div class="col">
+											<% if @picture.remaining_conv_filters.size <1 %>
+												<p>Todos los filtros han sido aplicados</p>
+											<% else %>
+												<%= f.select :filter_type, @picture.remaining_conv_filters %>											
+												<%=form.submit "Aplicar Filtro", class:"btn btn-outline-secondary"  %>
+												
+											<% end %>
+
+								</div>
+							</div>
+					<% end %>
+				<% end %>
+			<% end %>
+	</div>	
+</div>
 
 
-  	<hr class="featurette-divider">
+

@@ -1,5 +1,5 @@
 class Variation < ApplicationRecord
-  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Constraste','Inverso','Componente RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss']
+  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Componente RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss']
   attr_accessor :variations_attributes
   belongs_to :picture
   has_one_attached :image
@@ -7,7 +7,58 @@ class Variation < ApplicationRecord
   validates :mheight_param,  numericality: {greater_than: 0}, allow_nil: true
   
   
-  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0)
+  def self.convolution_filters
+    FILTER_TYPES[14..19]
+  end
+
+  def red
+    rgb.split(' ',3)[0] if rgb
+  end
+  
+  def red=(r)
+    if rgb.nil? && r.present?
+      self.rgb << r 
+    else
+      a = self.rgb.split(' ',3)
+      a[0] = r
+      self.rgb = a.join(' ')
+    end
+  end
+  
+  def green
+    rgb.split(' ',3)[1]
+  end
+  
+  def green=(g)
+    if rgb.nil? && g.present?
+      self.rgb << '0 ' + g 
+    else
+      a = self.rgb.split(' ',3)
+      a[1] = g
+      self.rgb = a.join(' ')
+    end
+  end
+  
+  def blue
+    rgb.split(' ',3)[2]
+  end
+  
+  def blue=(b)
+    if rgb.nil? && g.present?
+      self.rgb << '0 0 ' + g 
+    else
+      a = self.rgb.split(' ',3)
+      a[2] = b
+      self.rgb = a.join(' ')
+    end
+  end
+  
+  def component(r,g,b)
+    self.rgb = [r,g,b].join(' ') if rgb.nil?
+  end
+  
+  
+  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0')
     filter_applied = FILTER_TYPES.index(filter_asked)
     filter_applied == 10 ? access = :random : access = :sequential
     im = Vips::Image.new_from_file ActiveStorage::Blob.service.send(:path_for, picture.image.key), access: access
@@ -89,14 +140,16 @@ class Variation < ApplicationRecord
       self[:mwidth_param] = horizontal
       self[:mheight_param] = vertical      
     when 11
-       im = im.bandand
+        im = (im[0]*0.3+im[1]*0.59+im[2]*0.11)
        im = (im > 127).ifthenelse(255,0)
     when 12
       im = im.bandand
       im = (im > 127).ifthenelse(0,255)
     when 13
-      #crear mica
-      mica = im.new_from_image [255,0,255]
+      r = c_rgb.split(' ',3)[0]
+      g = c_rgb.split(' ',3)[1]
+      b = c_rgb.split(' ',3)[2]      
+      mica = im.new_from_image [r.to_i,g.to_i,b.to_i]
       im = im.boolean(mica,:and)
     when 14
       grid = Vips::Image.new_from_array [

@@ -59,12 +59,22 @@ class PicturesController < ApplicationController
   def update
     @picture = Picture.find params[:id]
     variation = @picture.variations.build(picture_params)
-    filter = params[:picture][:variation][:filter_type]
+    filter = ''
+    if Variation.convolution_filters.include? params[:picture][:variation][:filter_type]
+        filter = params[:picture][:variation][:filter_type]
+      else
+        filter = params[:commit]        
+    end
+    
     bright = params[:picture][:variation][:bright_param]
     mwidth = params[:picture][:variation][:mwidth_param]
     mheight = params[:picture][:variation][:mheight_param] 
+    r = params[:picture][:variation][:red]
+    g = params[:picture][:variation][:green]
+    b = params[:picture][:variation][:blue]
 
-    variation.pdi_filter(filter,bright,mwidth,mheight)
+    variation.component(r,g,b) if filter == 'Componente RGB'
+    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb)
 
     respond_to do |wants|
       if @picture.update(picture_params)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_24_065440) do
+ActiveRecord::Schema.define(version: 2021_03_31_054121) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2021_03_24_065440) do
     t.integer "mheight"
     t.integer "mwidth_param"
     t.integer "mheight_param"
+    t.string "rgb"
     t.index ["picture_id"], name: "index_variations_on_picture_id"
   end
 
