@@ -40,7 +40,7 @@ set :keep_releases, 5
 # set :ssh_options, verify_host_key: :secure
 set :user,            'deploy'
 set :puma_threads,    [4, 16]
-set :puma_workers,    0
+set :puma_workers,    1
 
 set :pty,             true
 set :use_sudo,        false

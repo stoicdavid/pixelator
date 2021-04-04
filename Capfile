@@ -39,7 +39,7 @@ require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'capistrano/puma'
 install_plugin Capistrano::Puma
-install_plugin Capistrano::Puma::Daemon
+install_plugin Capistrano::Puma::Systemd
 set :rbenv_type, :user
 set :rbenv_ruby, '3.0.0'
 
