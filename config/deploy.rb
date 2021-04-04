@@ -22,6 +22,8 @@ set :repo_url, "git@github.com:stoicdavid/pixelator.git"
 
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml"
+#append :linked_files, "../.rbenv-vars", "../app/config/database.yml"
+append :linked_files, "../.rbenv-vars"
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
@@ -41,7 +43,6 @@ set :keep_releases, 5
 set :user,            'deploy'
 set :puma_threads,    [4, 16]
 set :puma_workers,    1
-
 set :pty,             true
 set :use_sudo,        false
 set :stage,           :production
