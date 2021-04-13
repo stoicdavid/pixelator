@@ -57,10 +57,12 @@ class Variation < ApplicationRecord
     self.rgb = [r,g,b].join(' ') if rgb.nil?
   end
   
+
+  
   
   def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0')
     filter_applied = FILTER_TYPES.index(filter_asked)
-    filter_applied == 10 ? access = :random : access = :sequential
+    filter_applied == 10 || filter_applied >= 14 ? access = :random : access = :sequential
     im = Vips::Image.new_from_file ActiveStorage::Blob.service.send(:path_for, picture.image.key), access: access
     bright = bright.to_i
     alpha = nil
@@ -89,33 +91,20 @@ class Variation < ApplicationRecord
     when 8
       im = im[2]
     when 9
-      if !im.has_alpha?
-        im = im.linear [1,1,1], [bright,bright,bright]
-      else
-        im = im.linear [1,1,1,1], [bright,bright,bright,bright]
-      end
+      im = im.linear [1,1,1], [bright,bright,bright]
       self[:bright_param] = bright
 
     when 10
       
-      if (10..im.width/2).include?(horizontal.to_i)
-        wstep = horizontal.to_i
-      else 
-        raise "Bad input" 
-      end
+      wstep = horizontal.to_i.clamp (10..im.width/2)
+      hstep = vertical.to_i.clamp (10..im.height/2)
       
-      if (10..im.height/2).include?(vertical.to_i) 
-        hstep = vertical.to_i
-      else 
-        raise "Bad input"
-      end
         
       result = im.new_from_image [0,0,0]
-      h = 0
-      while h+hstep <= im.height
+      (0...im.height-hstep).step(hstep).each do |h|
         mline = []
-        w = 0
-        while w+wstep <= im.width
+        (0...im.width-wstep).step(wstep).each do |w|
+          #puts "#{h} , #{w}"
           area = im.extract_area(w,h,wstep,hstep)
           s = area.stats
           ravg = s.getpoint(4,1) [0]
@@ -125,20 +114,20 @@ class Variation < ApplicationRecord
           r = r.linear [0], [ravg]
           g = g.linear [0], [gavg]
           b = b.linear [0], [bavg]
-          mosaic = r.bandjoin(g).bandjoin(b)
-          mline << mosaic
-          w += wstep
+          mline << r.bandjoin(g).bandjoin(b)
         end
         if h == 0
           result = Vips::Image.arrayjoin(mline)
         else
           result = result.join Vips::Image.arrayjoin(mline), :vertical
         end
-          h += hstep
+          mline = nil
       end
       im = result
+      result = nil
       self[:mwidth_param] = horizontal
-      self[:mheight_param] = vertical      
+      self[:mheight_param] = vertical
+
     when 11
         im = (im[0]*0.3+im[1]*0.59+im[2]*0.11)
        im = (im > 127).ifthenelse(255,0)
@@ -151,13 +140,19 @@ class Variation < ApplicationRecord
       b = c_rgb.split(' ',3)[2]      
       mica = im.new_from_image [r.to_i,g.to_i,b.to_i]
       im = im.boolean(mica,:and)
+      mica = nil
+      r = g = b = nil
     when 14
       grid = Vips::Image.new_from_array [
           [0.0,0.2,0.0],
           [0.2,0.2,0.2],
           [0.0,0.2,0.0]
           ], 1
-      im = im.conv grid, precision: :float
+      #im = im.conv grid, precision: :integer --> Ver. VIPS
+      #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+      # abajo version usando ImageMagick para leer pixeles
+      im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+      grid = nil
     when 15
       grid = Vips::Image.new_from_array [
           [0,0,1,0,0],
@@ -166,7 +161,11 @@ class Variation < ApplicationRecord
           [0,1,1,1,0],
           [0,0,1,0,0]                              
           ], 13
-      im = im.conv grid, precision: :integer
+          #im = im.conv grid, precision: :integer --> Ver. VIPS
+          #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+          # abajo version usando ImageMagick para leer pixeles
+          im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+          grid = nil
     when 16
       grid = Vips::Image.new_from_array [
           [1,0,0,0,0,0,0,0,0],
@@ -179,7 +178,11 @@ class Variation < ApplicationRecord
           [0,0,0,0,0,0,0,1,0],
           [0,0,0,0,0,0,0,0,1]                                                                                
           ], 9
-      im = im.conv grid, precision: :integer
+          #im = im.conv grid, precision: :integer --> Ver. VIPS
+          #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+          # abajo version usando ImageMagick para leer pixeles
+          im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+          grid = nil
     when 17
       grid = Vips::Image.new_from_array [
           [-1,0,0,0,0],
@@ -188,14 +191,22 @@ class Variation < ApplicationRecord
           [0,0,0,-2,0],
           [0,0,0,0,-1]
           ], 1
-      im = im.conv grid, precision: :integer
+          #im = im.conv grid, precision: :integer --> Ver. VIPS
+          #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+          # abajo version usando ImageMagick para leer pixeles
+          im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+          grid = nil
     when 18
       grid = Vips::Image.new_from_array [
           [-1,-1,-1],
           [-1, 9,-1],
           [-1,-1,-1],
           ], 1
-      im = im.conv grid, precision: :integer
+          #im = im.conv grid, precision: :integer --> Ver. VIPS
+          #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+          # abajo version usando ImageMagick para leer pixeles
+          im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+          grid = nil
     when 19                        
       grid = Vips::Image.new_from_array [
           [-1,-1,-1,-1,0],
@@ -204,10 +215,87 @@ class Variation < ApplicationRecord
           [-1,0, 1, 1, 1],
           [0, 1, 1, 1, 1]                    
           ], 1, 128
-      im = im.conv grid, precision: :integer
+          #im = im.conv grid, precision: :integer --> Ver. VIPS
+          #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
+          # abajo version usando ImageMagick para leer pixeles
+          im = Vips::Image.new_from_buffer(convolution2(grid,im).to_blob,"")
+          grid = nil
     else
     end
     
+    variant_save(im,alpha,filter_asked)
+    
+  end
+  
+
+  def convolution(grid,image)
+        
+    mfilter = grid.to_a
+    offset = mfilter.length / 2
+    filter_width = mfilter[0].length
+    filter_height = mfilter.length
+    
+    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a.reverse[row][col][0]}
+    pad_image = image.embed(offset,offset,image.width+offset*2,image.height+offset*2)
+    iheight = pad_image.height-filter_height+1
+    iwidth = pad_image.width-filter_width+1
+
+    new_im = Enumerator.new do |ni|
+      (iheight).times do |y|
+        (iwidth).times do |x|
+          rgb = pad_image.extract_area(x,y,filter_width,filter_height).bandsplit.map {|color| color.to_a}
+          new_pixel = rgb.map do |color|
+            m = Matrix.build(filter_width, filter_height) {|row,col| color[row][col][0]}
+              calc = ((1/grid.scale) * (m.hadamard_product(mgrid).to_a.flatten.reduce(&:+)) + grid.offset).clamp (0..255)
+            end
+          rgb=nil
+          ni << new_pixel
+          new_pixel = nil
+        end
+      end
+    end
+    return MiniMagick::Image.get_image_from_pixels(new_im.collect { |element| element}, [image.width,image.height], 'rgb', 8 ,'jpg')
+  end
+  
+  
+  def convolution2(grid,image)
+
+    mfilter = grid.to_a
+    offset = mfilter.length / 2
+    filter_width = mfilter[0].length
+    filter_height = mfilter.length
+    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}
+    o_image = MiniMagick::Image.open ActiveStorage::Blob.service.send(:path_for, picture.image.key)
+    o_pixels = o_image.get_pixels
+    
+    out = []
+    (o_image.height).times do |y|
+      new_pix = []
+      (o_image.width).times do |x|       
+        red = green = blue = 0
+        mgrid.each_with_index do |fpix,row,col|
+          pix = x + (offset-col)
+          piy = y + (offset-row)
+          if( piy.between?(0,o_image.height-1) && pix.between?(0,o_image.width-1))
+            red += o_pixels[piy][pix][0] * fpix
+            green += o_pixels[piy][pix][1] * fpix
+            blue += o_pixels[piy][pix][2] * fpix
+          end
+        end
+        red = ((1/grid.scale) * red + grid.offset).clamp (0..255)
+        green = ((1/grid.scale) * green + grid.offset).clamp (0..255)
+        blue = ((1/grid.scale) * blue + grid.offset).clamp (0..255)
+        new_pix << [red,green,blue]
+      end
+      out << new_pix
+    end
+    o_pixels = nil
+    new_pix = nil
+    return MiniMagick::Image.get_image_from_pixels(out, [o_image.width,o_image.height], 'rgb', 8 ,'jpg')
+    out = nil
+  end
+  
+  def variant_save(im,alpha=nil,filter_asked='')
     filext = nil    
     
     if !alpha.nil? 
@@ -216,8 +304,8 @@ class Variation < ApplicationRecord
     else
       filext = ".jpg"
     end
-    
-    filename = "#{im.filename.to_s.split('.').first}_#{filter_asked}"+filext
+    suffix = filter_asked.empty? ? 'support' : filter_asked
+    filename = "#{im.filename.to_s.split('.').first}_#{suffix}"+filext
     #im.pngsave "app/assets/images/#{filename}"
     #result = ImageProcessing::Vips.source(im)
     self[:filter_type] = filter_asked
@@ -227,9 +315,12 @@ class Variation < ApplicationRecord
     else
       image.attach(io: StringIO.new(im.jpegsave_buffer), filename:filename, content_type:'image/jpeg')
     end
-    
+    im = nil
   end
   
-
   
 end
+
+#filterX = (x - filter_width / 2 + col + o_image.width ).abs.modulo(o_image.width)
+#filterY = (y - filter_height / 2 + row + o_image.height ).abs.modulo(o_image.height)
+#red += o_pixels[filterY * o_image.width + filterX]
