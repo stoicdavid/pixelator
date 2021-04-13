@@ -44,7 +44,7 @@ class PicturesController < ApplicationController
 
     respond_to do |wants|
       if @picture.save!
-        flash[:notice] = 'Picture was successfully created.'
+        flash[:notice] = 'La imagen fue cargada exitosamente.'
         wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
         wants.xml  { render :xml => @picture, :status => :created, :location => @picture }
       else
@@ -78,8 +78,8 @@ class PicturesController < ApplicationController
 
     respond_to do |wants|
       if @picture.update(picture_params)
-        flash[:notice] = 'Picture was successfully updated.'
-        wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
+        flash[:notice] = "El filtro #{filter} fue aplicado exitosamente."
+        wants.html { redirect_to(:controller=>'welcome',:action =>:index,:id=> variation.id) }
         wants.xml  { head :ok }
       else
         wants.html { redirect_to(:controller=>'welcome',:action =>:index)}

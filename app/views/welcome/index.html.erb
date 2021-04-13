@@ -3,7 +3,7 @@
 	<div class="col">
 		<% if (@picture.variations.size>1) %>
 			<h5>Filtros previamente aplicados</h5>
-				<% @picture.variations.in_groups_of(9,false).map do |group| %>
+				<% @picture.variations.in_groups_of(5,false).each do |group| %>
 					<div class='row'>
 						<% group.each do |variation| %>
 							<div class="col">
@@ -12,7 +12,7 @@
 								<% else %>
 								<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"btn btn-outline-primary btn-sm" if variation.image.attached? %>								
 								<% end %>
-								<%= link_to icon("trash"), variation, method: :delete, class:"btn btn-outline-danger btn-sm", data: {remote: true, confirm: "Are you sure?"} if variation.image.attached?%>
+								<%= link_to icon("trash"), variation, method: :delete, class:"btn btn-outline-danger btn-sm", data: {remote: true, confirm: "¿Estás seguro que deseas eliminar el filtro aplicado?"} if variation.image.attached?%>
 							</div>
 						<% end %>
 						</div>
@@ -26,7 +26,7 @@
 	  <div class="form-group">
 	  	<% if @picture.image.attached? %>
 			<%= image_tag @picture.image, class:"img-fluid rounded mx-auto d-block" %>
-			<%= link_to icon("trash"), @picture, method: :delete, data: {remote: true, confirm: "Are you sure?"},class: 'btn btn-outline-danger' if @picture.image.attached?%>
+			<%= link_to icon("trash"), @picture, method: :delete, data: {remote: true, confirm: "¿Estás seguro que deseas eliminar la imagen?"},class: 'btn btn-outline-danger' if @picture.image.attached?%>
 		<% else %>
 	  
     <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
