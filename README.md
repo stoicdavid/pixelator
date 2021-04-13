@@ -11,21 +11,22 @@ En este archivo encontrarás las instrucciones para que el software puedas ejecu
 ```
 http://165.232.136.224/welcome/index
 ```
-La aplicacion esta corriendo actualmente en Digital Ocean con servidor virtualizado con Ubuntu 20, sin embargo puedes instalar la aplicacion en linux on mac si quieres ejecutarla localmente. Abajo los detalles
+La aplicacion esta corriendo actualmente en Digital Ocean con servidor virtualizado con Ubuntu 20, sin embargo puedes instalar la aplicacion en linux on mac si quieres ejecutarla localmente. Abajo los detalles.
 
 ### Pre-requisitos
 
 A pesar de utilizar las bibliotecas nativas de Rails y si se quiere instalar de manera local debe contarse con lo siguiente:
 
 Mi recomendacion para un buen development stack es lo siguiente:
-zsh -> Recomiendo OhMyZsh
-XCode -> si estas en macos y descargar las command line tools
-apt -> ubuntu o 
-homebrew -> macos
-rbenv -> para manejar diferentes versiones del lenguaje ruby o bien
-adsf -> para manejar versiones de software no solo ruby
-git -> para gestionar las versiones del codigo
-Yarn y Node -> instalar via adsf, son requeridos por rails
+
+* zsh -> Recomiendo OhMyZsh
+* XCode -> si estas en macos y descargar las command line tools
+* apt -> ubuntu o 
+* homebrew -> macos
+* rbenv -> para manejar diferentes versiones del lenguaje ruby o bien
+* adsf -> para manejar versiones de software no solo ruby
+* git -> para gestionar las versiones del codigo
+* Yarn y Node -> instalar via adsf, son requeridos por rails
 
 Con lo anterior procede a instalar ruby
 
@@ -42,6 +43,7 @@ $ asdf global ruby 3.0.0
 ```
 
 Ruby utiliza bibliotecas a manera de gemas o 'gems', actualiza para que no te instale la documentacion de cada gema a utilizar y evitar que tarde tiempo la actualizaci{on de gemas y posteriormente actualiza el sistema y las gemas a la versión mas reciente
+
 ```	
 $ echo "gem: --no-document" >> ~/.gemrc
 $ gem update --system
@@ -54,9 +56,9 @@ Ahora si instala Rails 6.1.3 a traves de
 $ gem install rails
 ```
 
-PostgreSQL -> recomiendo instalar via apt o homebrew
+* PostgreSQL -> recomiendo instalar via apt o homebrew
 
-Tambien para el manejo de imagenes instalas las siguientes bibliotecas
+* Tambien para el manejo de imagenes instalas las siguientes bibliotecas
 
 macos
 ```
@@ -121,25 +123,43 @@ Las imagenes pueden contener el canal alpha pues este canal se elimina del proce
 
 La aplicación cuenta con los siguientes filtros implementados
 
-Nueve métodos de escalas de grises
-Filtro Brillo con un slider para seleccionar valores de 0 a 255
-Filtro Mosaico con entradas de Ancho y Alto (valor minimo 10 y maximo hasta la mitad de la imagen)
-Filtro Alto Contraste e Inverso
-Filtro Componente RGB con sliders para seleccionar el rango de RGB de cada color
+* Nueve métodos de escalas de grises
+* Filtro Brillo con un slider para seleccionar valores de 0 a 255
+* Filtro Mosaico con entradas de Ancho y Alto (valor minimo 10 y maximo hasta la mitad de la imagen)
+* Filtro Alto Contraste e Inverso
+* Filtro Componente RGB con sliders para seleccionar el rango de RGB de cada color
 
 ### Filtros de convolución
 
 Los filtros de convolución implementados son:
 
-Blur 1
-Blur 2
-Motion Blur
-Bordes
-Sharpen
-Emboss
+* Blur 1
+* Blur 2
+* Motion Blur
+* Bordes
+* Sharpen
+* Emboss
 
+### Estructura de la aplicación y clases principales
 
-## Bibliotecas de imagenes empleadas
+Rails utiliza el patrón de arquitectura MVC, por lo que las clases principales las encontrarás en la carpeta
+
+```
+cd app/models
+```
+
+La aplicación cuenta con dos modelos principales para almacenar las imagenes
+
+* Picture -> Almacena la imagen principal o padre
+* Variation -> Almacena las variaciones y filtros a aplicar
+
+* ** Dentro de Variation se encuentra el metodo pdi_filter que recibe del controlador la instrucción para aplicar filtros
+
+* ** Dependiendo del tipo de filtro, el método selecciona el correspondiente, lo opera y regresa una nueva imágen ya con el filtro aplicado.
+
+* ** La imágen con la variación se almancena en la base de datos en postgres para posterior consulta.
+
+## Bibliotecas de imágenes empleadas
 
 * [libvips](https://libvips.github.io/libvips/) - Default en Rails 6.1.3 usada para acceder a las imagenes
 * [ruby-vips](https://github.com/libvips/ruby-vips) - Binding para ruby, el lenguaje utilizado
