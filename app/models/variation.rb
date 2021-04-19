@@ -132,36 +132,22 @@ class Variation < ApplicationRecord
       hstep = vertical.to_i.clamp (10..im.height/2)
       
       # Iteracion en toda la imagen para obtener los mosaicos
-      result = im.new_from_image [0,0,0]
-      (0...im.height-hstep).step(hstep).each do |h|
-        mline = []
-        (0...im.width-wstep).step(wstep).each do |w|
-          # Se obtiene el area deseada del tamaño del rectangulo
-          area = im.extract_area(w,h,wstep,hstep)
-          # Se obtiene el promedio del area deseada por cada banda de color
-          s = area.stats
-          ravg = s.getpoint(4,1) [0]
-          gavg = s.getpoint(4,2) [0]
-          bavg = s.getpoint(4,3) [0]
-          r,g,b = area.bandsplit
-          # Se aplica el promedio a toda el area
-          r = r.linear [0], [ravg]
-          g = g.linear [0], [gavg]
-          b = b.linear [0], [bavg]
-          # Se une nuevamente la imagen y se integra a un arreglo.
-          mline << r.bandjoin(g).bandjoin(b)
+      # se utiliza el método mutate de ruby-vips para aplicar los cambios sobre la imagen
+      im = im.mutate do |result| 
+        (0...result.height-hstep).step(hstep).each do |h|
+          (0...result.width-wstep).step(wstep).each do |w|
+            # Se obtiene el area deseada del tamaño del rectangulo
+            color_avg = im.extract_area(w,h,wstep,hstep)
+            # Se obtiene el promedio del area deseada por cada banda de color
+            s = color_avg.stats
+            ravg = s.getpoint(4,1) [0]
+            gavg = s.getpoint(4,2) [0]
+            bavg = s.getpoint(4,3) [0]
+            # Se aplica el promedio a toda el area en la nueva imagen
+            result.draw_rect! [ravg,gavg,bavg],w,h,wstep,hstep, fill: true
+          end
         end
-        # Se unen los mosaicos en una nueva imagen
-        if h == 0
-          result = Vips::Image.arrayjoin(mline)
-        else
-          result = result.join Vips::Image.arrayjoin(mline), :vertical
-        end
-          mline = nil
-      end
-      # Se regresa la nueva imagen con el mosaico aplicado
-      im = result
-      result = nil
+    end
       self[:mwidth_param] = horizontal
       self[:mheight_param] = vertical
 
@@ -198,6 +184,7 @@ class Variation < ApplicationRecord
 
       # version optimizada abajo version usando ImageMagick para leer pixeles
       im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+      #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
       grid = nil
     when 15
       # Blur 3 - mayor efecto - Se crea matriz
@@ -212,6 +199,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 16
       # Motion Blur - mayor efecto - Se crea matriz      
@@ -230,6 +218,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 17
       # Encontrar bordes - Se crea matriz
@@ -244,6 +233,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 18
       # Sharpen - Se crea matriz      
@@ -256,6 +246,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 19                        
       # Emboss - Se crea matriz      
@@ -270,6 +261,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     else
     end
@@ -332,12 +324,12 @@ class Variation < ApplicationRecord
     offset = mfilter.length / 2
     filter_width = mfilter[0].length
     filter_height = mfilter.length
-    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}
+    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
+
     # Pasa el arreglo a matriz para facilitar su manipulación
     o_image = MiniMagick::Image.open ActiveStorage::Blob.service.send(:path_for, picture.image.key)
     # obtiene pixeles de la imagen
     o_pixels = o_image.get_pixels
-    
     # recorre los pixeles de la imagen
     out = []
     (o_image.height).times do |y|
@@ -371,6 +363,48 @@ class Variation < ApplicationRecord
     return MiniMagick::Image.get_image_from_pixels(out, [o_image.width,o_image.height], 'rgb', 8 ,'jpg')
     out = nil
   end
+
+  def convolution3(grid,image)
+
+    # Se obtiene la matriz para la convolucion y se obtienen sus caracteristicas
+    # mfilter - la matrix en arreglo
+    # offset - el desplazamiento del pixel central - tamaño de la matriz entre dos
+    # filter_width y filter_height - alto y ancho de la matriz
+    mfilter = grid.to_a
+    offset = mfilter.length / 2
+    filter_width = mfilter[0].size
+    filter_height = mfilter.size
+    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
+    pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
+    # alto y ancho de la nueva imagen
+    iheight = pad_image.height-mfilter.size
+    iwidth = pad_image.width-mfilter.size
+
+
+    # recorre los pixeles de la imagen
+    out = []
+    iheight.times do |y|
+      new_pix = []
+      iwidth.times do |x|       
+        rgb = []
+        mgrid.each_with_index do |fpix,row,col|
+          # coordenadas en la imagen conforme el filtro
+          pix = x + col
+          piy = y + row
+          rgb = rgb.zip(pad_image.getPoint(pix,piy).map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
+        end
+        # aplica los factores de la convolucion y limita a 0 o 255 
+        new_pix = rgb.map{|color|((1/grid.scale) * color * grid.offset).clamp (0..255)}
+      end
+      out << new_pix
+    end
+    o_pixels = nil
+    new_pix = nil
+    # regresa la imagen generada
+    return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    out = nil
+  end
+
   
   #Método para regresar el alpha a la imagen, si es que tenia uno y guardarla en base de datos anexandola por medio de Active Storage.
   def variant_save(im,alpha=nil,filter_asked='')
