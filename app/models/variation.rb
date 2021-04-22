@@ -374,7 +374,7 @@ class Variation < ApplicationRecord
     offset = mfilter.length / 2
     filter_width = mfilter[0].size
     filter_height = mfilter.size
-    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
+    mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a.reverse[row][col][0]}    
     pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
     # alto y ancho de la nueva imagen
     iheight = image.height
@@ -401,9 +401,9 @@ class Variation < ApplicationRecord
 
         # aplica los factores de la convolucion y limita a 0 o 255 
         # new_pix = rgb.map{|color|((1/grid.scale) * color * grid.offset).clamp (0..255)}
-        red = ((1/grid.scale) * red + grid.offset).clamp (0..255)
-        green = ((1/grid.scale) * green + grid.offset).clamp (0..255)
-        blue = ((1/grid.scale) * blue + grid.offset).clamp (0..255)
+        red = ((1/grid.scale) * red).clamp (0..255)
+        green = ((1/grid.scale) * green).clamp (0..255)
+        blue = ((1/grid.scale) * blue).clamp (0..255)
         new_pix << [red.truncate,green.truncate,blue.truncate]
       end
       out << new_pix
