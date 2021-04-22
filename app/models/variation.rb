@@ -183,11 +183,11 @@ class Variation < ApplicationRecord
       #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
 
       # version optimizada abajo version usando ImageMagick para leer pixeles
-      im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-      #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+      #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
       grid = nil
     when 15
-      # Blur 3 - mayor efecto - Se crea matriz
+      # Blur 2 - mayor efecto - Se crea matriz
       grid = Vips::Image.new_from_array [
           [0,0,1,0,0],
           [0,1,1,1,0],
@@ -198,8 +198,8 @@ class Variation < ApplicationRecord
           #im = im.conv grid, precision: :integer --> Ver. VIPS
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
-          im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 16
       # Motion Blur - mayor efecto - Se crea matriz      
@@ -217,8 +217,8 @@ class Variation < ApplicationRecord
           #im = im.conv grid, precision: :integer --> Ver. VIPS
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
-          im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #sim = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 17
       # Encontrar bordes - Se crea matriz
@@ -232,8 +232,8 @@ class Variation < ApplicationRecord
           #im = im.conv grid, precision: :integer --> Ver. VIPS
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
-          im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 18
       # Sharpen - Se crea matriz      
@@ -245,8 +245,8 @@ class Variation < ApplicationRecord
           #im = im.conv grid, precision: :integer --> Ver. VIPS
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
-          im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 19                        
       # Emboss - Se crea matriz      
@@ -260,8 +260,8 @@ class Variation < ApplicationRecord
           #im = im.conv grid, precision: :integer --> Ver. VIPS
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
-          im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
+          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     else
     end
@@ -377,29 +377,39 @@ class Variation < ApplicationRecord
     mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
     pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
     # alto y ancho de la nueva imagen
-    iheight = pad_image.height-mfilter.size
-    iwidth = pad_image.width-mfilter.size
+    iheight = pad_image.height - filter_height + 1
+    iwidth = pad_image.width - filter_width + 1
 
 
     # recorre los pixeles de la imagen
     out = []
     iheight.times do |y|
       new_pix = []
-      iwidth.times do |x|       
-        rgb = []
+      rgb = pad_image.extract_area(0,y,iwidth,filter_height).to_a
+      (iwidth).times do |x|
+        red = green = blue = 0       
         mgrid.each_with_index do |fpix,row,col|
           # coordenadas en la imagen conforme el filtro
-          pix = x + col
-          piy = y + row
-          rgb = rgb.zip(pad_image.getPoint(pix,piy).map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
+          #piy = y + offset
+          pix = (x + col) % (iwidth)
+
+          #rgb = rgb.zip(rgb[piy][pix].map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
+          red += rgb[row][pix][0] * fpix
+          green += rgb[row][pix][1] * fpix
+          blue += rgb[row][pix][2] * fpix
         end
+
         # aplica los factores de la convolucion y limita a 0 o 255 
-        new_pix = rgb.map{|color|((1/grid.scale) * color * grid.offset).clamp (0..255)}
+        # new_pix = rgb.map{|color|((1/grid.scale) * color * grid.offset).clamp (0..255)}
+        red = ((1/grid.scale) * red + grid.offset).clamp (0..255)
+        green = ((1/grid.scale) * green + grid.offset).clamp (0..255)
+        blue = ((1/grid.scale) * blue + grid.offset).clamp (0..255)
+        new_pix << [red,green,blue]
       end
       out << new_pix
+      new_pix = nil
     end
-    o_pixels = nil
-    new_pix = nil
+
     # regresa la imagen generada
     return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
     out = nil
