@@ -377,26 +377,26 @@ class Variation < ApplicationRecord
     mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
     pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
     # alto y ancho de la nueva imagen
-    iheight = pad_image.height - filter_height
-    iwidth = pad_image.width - filter_width
-
+    iheight = image.height
+    iwidth = image.width
 
     # recorre los pixeles de la imagen
     out = []
-    (0..iheight).each do |y|
+    iheight.times do |y|
       new_pix = []
-      rgb = pad_image.extract_area(0,y,iwidth,filter_height).to_a
-      (0..iwidth).each do |x|
+      rgb = pad_image.extract_area(0,y,pad_image.width,filter_height).to_a
+      iwidth.times do |x|
         red = green = blue = 0       
         mgrid.each_with_index do |fpix,row,col|
           # coordenadas en la imagen conforme el filtro
           #piy = y + offset
-          pix = (x + col) % iwidth - offset + 1
-
+          pix = (x + col) % pad_image.width
+          #puts "#{pix}"
           #rgb = rgb.zip(rgb[piy][pix].map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
           red += rgb[row][pix][0] * fpix
           green += rgb[row][pix][1] * fpix
           blue += rgb[row][pix][2] * fpix
+          #puts "rgb: #{rgb[row][pix]}, red:#{red}, green:#{green}, blue:#{blue} "
         end
 
         # aplica los factores de la convolucion y limita a 0 o 255 
