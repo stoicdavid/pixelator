@@ -404,7 +404,7 @@ class Variation < ApplicationRecord
         red = ((1/grid.scale) * red + grid.offset).clamp (0..255)
         green = ((1/grid.scale) * green + grid.offset).clamp (0..255)
         blue = ((1/grid.scale) * blue + grid.offset).clamp (0..255)
-        new_pix << [red,green,blue]
+        new_pix << [red.truncate,green.truncate,blue.truncate]
       end
       out << new_pix
       new_pix = nil
