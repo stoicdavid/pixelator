@@ -377,21 +377,21 @@ class Variation < ApplicationRecord
     mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a[row][col][0]}    
     pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
     # alto y ancho de la nueva imagen
-    iheight = pad_image.height - filter_height + 1
-    iwidth = pad_image.width - filter_width + 1
+    iheight = pad_image.height - filter_height
+    iwidth = pad_image.width - filter_width
 
 
     # recorre los pixeles de la imagen
     out = []
-    iheight.times do |y|
+    (0..iheight).each do |y|
       new_pix = []
       rgb = pad_image.extract_area(0,y,iwidth,filter_height).to_a
-      (iwidth).times do |x|
+      (0..iwidth).each do |x|
         red = green = blue = 0       
         mgrid.each_with_index do |fpix,row,col|
           # coordenadas en la imagen conforme el filtro
           #piy = y + offset
-          pix = (x + col) % (iwidth)
+          pix = (x + col) % iwidth - offset + 1
 
           #rgb = rgb.zip(rgb[piy][pix].map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
           red += rgb[row][pix][0] * fpix
