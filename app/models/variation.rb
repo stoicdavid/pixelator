@@ -184,7 +184,7 @@ class Variation < ApplicationRecord
 
       # version optimizada abajo version usando ImageMagick para leer pixeles
       #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+      im = convolution3(grid,im)
       grid = nil
     when 15
       # Blur 2 - mayor efecto - Se crea matriz
@@ -199,7 +199,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     when 16
       # Motion Blur - mayor efecto - Se crea matriz      
@@ -218,7 +218,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #sim = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     when 17
       # Encontrar bordes - Se crea matriz
@@ -233,7 +233,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     when 18
       # Sharpen - Se crea matriz      
@@ -246,7 +246,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     when 19                        
       # Emboss - Se crea matriz      
@@ -261,7 +261,7 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     else
     end
@@ -383,7 +383,7 @@ class Variation < ApplicationRecord
     # recorre los pixeles de la imagen
     out = []
     iheight.times do |y|
-      new_pix = []
+      #new_pix = []
       rgb = pad_image.extract_area(0,y,pad_image.width,filter_height).to_a
       iwidth.times do |x|
         red = green = blue = 0       
@@ -401,17 +401,18 @@ class Variation < ApplicationRecord
 
         # aplica los factores de la convolucion y limita a 0 o 255 
         # new_pix = rgb.map{|color|((1/grid.scale) * color * grid.offset).clamp (0..255)}
-        red = ((1/grid.scale) * red).clamp (0..255)
+        red = ((1/grid.scale) * red + grid.offset).clamp (0..255)
         green = ((1/grid.scale) * green).clamp (0..255)
-        blue = ((1/grid.scale) * blue).clamp (0..255)
-        new_pix << [red.truncate,green.truncate,blue.truncate]
+        blue = ((1/grid.scale) * blue + grid.offset).clamp (0..255)
+        out << [red,green,blue]
       end
-      out << new_pix
-      new_pix = nil
+      #out << new_pix.flatten.pack('C*')
+      #new_pix = nil
     end
 
     # regresa la imagen generada
-    return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    return Vips::Image.new_from_memory out.pack("C*"),image.width,image.height,image.bands,image.format
     out = nil
   end
 
