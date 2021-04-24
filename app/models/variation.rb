@@ -379,6 +379,7 @@ class Variation < ApplicationRecord
     # alto y ancho de la nueva imagen
     iheight = image.height
     iwidth = image.width
+    piwidth = pad_image.width
 
     # recorre los pixeles de la imagen
     out = []
@@ -390,7 +391,7 @@ class Variation < ApplicationRecord
         mgrid.each_with_index do |fpix,row,col|
           # coordenadas en la imagen conforme el filtro
           #piy = y + offset
-          pix = (x + col) % pad_image.width
+          pix = (x + col) % piwidth
           #puts "#{pix}"
           #rgb = rgb.zip(rgb[piy][pix].map {|e| e * fpix}).map {|pair|pair.reduce(&:+)}
           red += rgb[row][pix][0] * fpix
@@ -412,7 +413,7 @@ class Variation < ApplicationRecord
 
     # regresa la imagen generada
     #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
-    return Vips::Image.new_from_memory out.pack("C*"),image.width,image.height,image.bands,image.format
+    return Vips::Image.new_from_memory out.flatten.pack("C*"),image.width,image.height,image.bands,image.format
     out = nil
   end
 
