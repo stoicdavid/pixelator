@@ -414,7 +414,6 @@ class Variation < ApplicationRecord
     # regresa la imagen generada
     #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
     logger.info "#{image.width}, #{image.height}, #{image.bands}"
-    Image
     return Vips::Image.new_from_memory out.flatten.pack("C*"),image.width,image.height,image.bands,image.format
     out = nil
   end
