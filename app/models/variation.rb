@@ -79,7 +79,7 @@ class Variation < ApplicationRecord
     
     
     # se obtiene la imagen cargada en el modelo Picture
-    im = Vips::Image.new_from_file ActiveStorage::Blob.service.send(:path_for, picture.image.key), access: access
+    im = Vips::Image.new_from_file ActiveStorage::Blob.service.send(:path_for, picture.image.key), access: :sequential
     # Configuración de algunos parametros obtenidos desde el controlador
     bright = bright.to_i
     
@@ -413,6 +413,8 @@ class Variation < ApplicationRecord
 
     # regresa la imagen generada
     #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    puts "#{image.width}, #{image.height}, #{image.bands}"
+
     return Vips::Image.new_from_memory out.flatten.pack("C*"),image.width,image.height,image.bands,image.format
     out = nil
   end
@@ -435,7 +437,8 @@ class Variation < ApplicationRecord
     self[:filter_type] = filter_asked
     #image.attach(io: File.open(Rails.root.join('app','assets','images',"#{filename}")), filename:'#{filename}.jpg',content_type:'image/jpg')
     if im.bands==2 || im.has_alpha?
-      image.attach(io: StringIO.new(im.pngsave_buffer, background: 255), filename:filename, content_type:'image/png')
+      puts "#{alpha.width}, #{alpha.height}, #{alpha.bands}"
+      image.attach(io: StringIO.new(im.pngsave_buffer), filename:filename, content_type:'image/png')
     else
       image.attach(io: StringIO.new(im.jpegsave_buffer), filename:filename, content_type:'image/jpeg')
     end
