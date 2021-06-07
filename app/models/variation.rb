@@ -436,7 +436,7 @@ class Variation < ApplicationRecord
     self[:filter_type] = filter_asked
     #image.attach(io: File.open(Rails.root.join('app','assets','images',"#{filename}")), filename:'#{filename}.jpg',content_type:'image/jpg')
     if im.bands==2 || im.has_alpha?
-      logger.info "Imagen con alpha: #{alpha.width}, #{alpha.height}, #{alpha.bands}"
+      logger.info "Imagen con alpha: #{im.width}, #{im.height}, #{im.bands},#{filename}"
       image.attach(io: StringIO.new(im.pngsave_buffer), filename:filename, content_type:'image/png')
     else
       image.attach(io: StringIO.new(im.jpegsave_buffer), filename:filename, content_type:'image/jpeg')
