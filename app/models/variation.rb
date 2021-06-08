@@ -185,7 +185,7 @@ class Variation < ApplicationRecord
       # version optimizada abajo version usando ImageMagick para leer pixeles
       #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
       #im = convolution3(grid,im)
-      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"", access: :random)      
+      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"", access: :sequential)      
       grid = nil
     when 15
       # Blur 2 - mayor efecto - Se crea matriz
