@@ -185,7 +185,7 @@ class Variation < ApplicationRecord
       # version optimizada abajo version usando ImageMagick para leer pixeles
       #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
       #im = convolution3(grid,im)
-      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"", access: :sequential)      
+      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"memory=true")      
       grid = nil
     when 15
       # Blur 2 - mayor efecto - Se crea matriz
@@ -219,8 +219,8 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #sim = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = convolution3(grid,im)
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     when 17
       # Encontrar bordes - Se crea matriz
@@ -417,9 +417,9 @@ class Variation < ApplicationRecord
     end
 
     # regresa la imagen generada
-    return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
     logger.info "#{iwidth}, #{out.size}, #{out[0].size}"
-    #return Vips::Image.new_from_memory out.flatten.pack("C*"), image.width, image.height, image.bands, image.format
+    return Vips::Image.new_from_memory out.flatten.pack("C*"), image.width, image.height, image.bands, image.format
     out = nil
   end
 
