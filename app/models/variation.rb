@@ -184,8 +184,8 @@ class Variation < ApplicationRecord
 
       # version optimizada abajo version usando ImageMagick para leer pixeles
       #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-      #im = convolution3(grid,im)
-      im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"memory=true")      
+      im = convolution3(grid,im)
+      #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"memory=true")      
       grid = nil
     when 15
       # Blur 2 - mayor efecto - Se crea matriz
@@ -200,7 +200,8 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
           grid = nil
     when 16
       # Motion Blur - mayor efecto - Se crea matriz      
@@ -235,8 +236,8 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = convolution3(grid,im)
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")                    
+          im = convolution3(grid,im)
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")                    
           grid = nil
     when 18
       # Sharpen - Se crea matriz      
@@ -249,8 +250,8 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = convolution3(grid,im)
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")          
+          im = convolution3(grid,im)
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")          
           grid = nil
     when 19                        
       # Emboss - Se crea matriz      
@@ -265,8 +266,8 @@ class Variation < ApplicationRecord
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          #im = convolution3(grid,im)
-          im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
+          im = convolution3(grid,im)
+          #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     else
     end
@@ -417,9 +418,9 @@ class Variation < ApplicationRecord
     end
 
     # regresa la imagen generada
-    return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
+    #return MiniMagick::Image.get_image_from_pixels(out, [image.width,image.height], 'rgb', 8 ,'jpg')
     logger.info "#{iwidth}, #{out.size}, #{out[0].size}"
-    #return Vips::Image.new_from_memory out.flatten.pack("C*"), image.width, image.height, image.bands, image.format
+    return Vips::Image.new_from_memory out.flatten.pack("C*"), image.width, image.height, image.bands, image.format
     out = nil
   end
 
@@ -442,7 +443,7 @@ class Variation < ApplicationRecord
     #image.attach(io: File.open(Rails.root.join('app','assets','images',"#{filename}")), filename:'#{filename}.jpg',content_type:'image/jpg')
     if im.bands==2 || im.has_alpha?
       logger.info "Imagen con alpha: #{im.width}, #{im.height}, #{im.bands},#{filename}"
-      image.attach(io: StringIO.new(im.write_to_buffer ".png"), filename:filename, content_type:'image/png')
+      image.attach(io: StringIO.new(im.pngsave_buffer), filename:filename, content_type:'image/png')
     else
       image.attach(io: StringIO.new(im.jpegsave_buffer), filename:filename, content_type:'image/jpeg')
     end
