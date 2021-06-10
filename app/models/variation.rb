@@ -432,6 +432,7 @@ class Variation < ApplicationRecord
     if !alpha.nil? 
       filext = ".png"
       im = im.bandjoin(alpha)
+      logger.info "#{im.bands}"
     else
       filext = ".jpg"
     end
