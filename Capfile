@@ -42,7 +42,7 @@ install_plugin Capistrano::Puma
 install_plugin Capistrano::Puma::Systemd
 install_plugin Capistrano::Puma::Nginx
 set :rbenv_type, :user
-set :rbenv_ruby, '3.0.0'
+set :rbenv_ruby, '3.0.1'
 #set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined

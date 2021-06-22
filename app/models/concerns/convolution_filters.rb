@@ -11,7 +11,7 @@ module ConvolutionFilters
       return (im > 127).ifthenelse(0,255)
     end
     
-    def apply_componente_rgb(im,c_rgb)
+    def apply_mica_rgb(im,c_rgb)
       #Componente RGB - Se obtienen los parametros capturados por el usuario
       r = c_rgb.split(' ',3)[0]
       g = c_rgb.split(' ',3)[1]
@@ -96,7 +96,7 @@ module ConvolutionFilters
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = convolution3(grid,im)
+          return convolution3(grid,im)
           #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")                    
           grid = nil
     end
@@ -112,7 +112,7 @@ module ConvolutionFilters
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = convolution3(grid,im)
+          return convolution3(grid,im)
           #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")          
           grid = nil
     end
@@ -130,7 +130,7 @@ module ConvolutionFilters
           #im = Vips::Image.new_from_buffer(convolution(grid,im).to_blob,"") --> Ver. only VIPS
           # abajo version usando ImageMagick para leer pixeles
           #im = Vips::Image.new_from_buffer(convolution2(grid).to_blob,"")
-          im = convolution3(grid,im)
+          return convolution3(grid,im)
           #im = Vips::Image.new_from_buffer(convolution3(grid,im).to_blob,"")
           grid = nil
     end

@@ -1,7 +1,7 @@
 class Variation < ApplicationRecord
   include BasicFilters, ConvolutionFilters
   
-  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Componente RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss']
+  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss']
   attr_accessor :variations_attributes
   belongs_to :picture
   has_one_attached :image
@@ -74,10 +74,6 @@ class Variation < ApplicationRecord
     
     filter_applied = FILTER_TYPES.index(filter_asked)
     
-
-
-
-    
     # Se determina el tipo de acceso a la imágen ya sea random o sequential
     # sequential es mas rápido pero para imagenes con muchos pixeles puede no funcionar
     
@@ -102,7 +98,7 @@ class Variation < ApplicationRecord
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, bright)
     when "Mosaico"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
-    when "Componente RGB"
+    when "Mica RGB"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, c_rgb)
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
