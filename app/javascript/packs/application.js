@@ -6,10 +6,26 @@
 import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
-import "channels"
-import 'bootstrap'
-import '../js/bootstrap_js_files.js'
+//require("@rails/ujs").start()
+//require("turbolinks").start()
+//require("@rails/activestorage").start()
 
+import "channels"
+
+//require('@client-side-validations/client-side-validations')
+//require("easy-autocomplete")
+//require("@zxing/library")
+//require("grapheme-splitter")
+//import("../src/foundation-datepicker")
+//import("../src/promotion_datespan")
+//import("../src/sms_counter")
+//import("../src/touch_table_highlight")
+require("jquery")
+require("foundation-sites")
+import { Foundation } from 'foundation-sites'
+import $ from 'jquery'
+
+document.addEventListener('turbolinks:load', () => $(document).foundation())
 
 Rails.start()
 Turbolinks.start()

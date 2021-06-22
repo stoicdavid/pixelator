@@ -1,0 +1,26 @@
+<div class="grid-container">
+    <h6>Filtros escala de grises</h6>
+	<br>
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture do |form| %>							
+				<%= form.fields_for :variation do |f| -%>
+					<% Variation::FILTER_TYPES[0..8].in_groups_of(9).each do |group| %>
+						<div class="grid-x">
+							<div class="cell auto">
+								<% group.each do |filter| %>
+									<% if @picture.remaining_filters.include? filter %>
+										<%= f.hidden_field :filter_type, value: filter %>
+										<%=form.submit filter, class:"hollow button"  %>
+									<% else %>
+										<%= f.hidden_field :filter_type, value: filter %>
+										<%=form.submit filter, disabled: true, class:"hollow button secondary"  %>
+									<% end %>
+								<% end %>
+							</div>
+						</div>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+
+</div>

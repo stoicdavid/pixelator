@@ -1,0 +1,40 @@
+<div class='cell auto'>
+    <h6>Filtro Componente RGB</h6>
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture do |form| %>
+					<div class='row mb-3'>
+				<%= form.fields_for :variation do |f| %>
+						<div class='col'>
+							<div class='row mb-3 justify-content-center align-items-center'>
+								<%= f.label :red, class: 'col-sm-3 col-form-label'  %>
+								<div class='col-sm-5'>
+									<%= f.range_field :red, :in => 0..255, :step => 1, class:'form-range' %>
+								</div>
+							</div>
+							<div class='row mb-3 justify-content-center align-items-center'>
+								<%= f.label :green, class: 'col-sm-3 col-form-label'  %>
+								<div class='col-sm-5'>
+									<%= f.range_field :green, :in => 0..255, :step => 1, class:'form-range' %>
+								</div>
+							</div>
+							<div class='row mb-3 justify-content-center align-items-center'>
+								<%= f.label :blue, class: 'col-sm-3 col-form-label'  %>
+								<div class='col-sm-5'>
+									<%= f.range_field :blue, :in => 0..255, :step => 1, class:'form-range' %>
+								</div>
+							</div>
+
+								<% if @picture.remaining_filters.include? 'Componente RGB' %>
+								<%= f.submit 'Componente RGB', value: 'Componente RGB', class: 'btn btn-outline-primary col-md-8' %>
+								<% else %>
+								<%= f.submit 'Componente RGB',disabled:true, value: 'Componente RGB', class: 'btn btn-outline-primary col-md-8' %>
+								<% end %>									
+						</div>
+
+				<% end %>
+					</div>
+			<% end %>
+
+		<% end %>
+
+</div>

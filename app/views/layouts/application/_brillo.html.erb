@@ -1,0 +1,27 @@
+<div class="grid-container">
+    <h6>Filtro Brillo (0 a 255)</h6>
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture do |form| %>
+					<div class='grid-x grid-margin-x'>
+				<%= form.fields_for :variation do |f| %>
+
+							<div class='cell auto align-middle'>
+
+								<%# f.range_field :bright_param, :in => 0..255, :step => 1 %>
+								<div class="slider" data-slider data-initial-start="50" data-step="1" data-end="255">
+						        	<span class="slider-handle"  data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput2"></span>
+									<span class="slider-fill" data-slider-fill></span>
+							  	</div>
+							  <%= f.number_field :bright_param, id:'sliderOutput2' %>
+							</div>
+	
+							<div class='cell auto grid-x grid-padding-x align-middle'>
+								<%= f.submit 'Aplica Brillo', value: 'Brillo', class: 'hollow button ' %>
+							</div>									
+				<% end %>
+
+					</div>
+			<% end %>
+
+		<% end %>
+</div>

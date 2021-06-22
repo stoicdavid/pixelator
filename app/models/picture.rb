@@ -7,6 +7,7 @@ class Picture < ApplicationRecord
   
 
 
+
   def remaining_filters
      Variation::FILTER_TYPES - (variations.map(&:filter_type)-["Brillo"])
   end

@@ -1,0 +1,42 @@
+<div data-sticky-container>
+  <div class="title-bar" data-sticky data-options="marginTop:0;">
+    	<span class="title-bar-title ">Pixelator</span>
+    <div class="title-bar-left ">
+		<ul class="menu ">
+			<% if @picture.image.attached?  %>
+			<li class="option-menu text-center">
+		<%= link_to icon("bootstrap-reboot",class:"icon-2"), @picture, method: :delete, data: {remote: true, confirm: "Esta acción eliminará la imagen cargada y todos sus filtros ¿Quieres continuar?"},class: '' %>
+			Reiniciar
+			</li>
+			<% end %>
+		</ul>
+    </div>
+	
+	<div class="off-canvas-content"  data-off-canvas-content>	
+	    <div class="title-bar-right"><!-- Content -->
+			<ul class=" menu align-right" data-dropdown-menu>
+				<% if @picture.image.attached?  %>
+				<li class="option-menu text-center">
+					<a data-toggle="offCanvasTrail"><%= icon("stack",class:"icon-2")%>
+						<br>
+						Filtros aplicados
+					</a>
+				</li>
+				<li class="option-menu text-center">
+					<a><%= icon("save2",class:"icon-2")%>
+						<br>
+						Guardar variante
+					</a>
+				</li>
+				<% end %>
+			  </ul>
+
+		</div>
+
+	</div>
+
+  </div>
+<div class="off-canvas position-top alt-menu" id="offCanvasTrail" data-off-canvas>
+	<%= render :partial => 'layouts/application/applied_filters' %>
+</div>
+</div>

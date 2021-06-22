@@ -1,0 +1,16 @@
+<% if notice %>
+<div class="callout success" data-closable="slide-out-right">
+	<%= notice %>
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+</div>
+<% end %>
+<% if alert %>
+<div class="callout warning" data-closable="slide-out-right">
+	<%= alert %>
+	<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+</div>
+<% end %>

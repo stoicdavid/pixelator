@@ -1,0 +1,20 @@
+<footer class="footer grid-frame">
+	<div class="grid-x grid-margin-x text-center align-stretch">
+	<% bottom_bar_menu_options.each do |k,v| %>
+		<div class="cell auto">
+			
+			<% if k=='Inverso' || k=='AltoContraste' %>
+			
+				<%= link_to button_icon(k,v), 
+				          picture_path(picture:{variation:{filter_type:k.titleize}},commit:k.titleize,id:@picture.id), 
+				          method: :patch,
+						  class:"clear button icon #{@picture.remaining_filters.include?(k.titleize) ? '' : 'disabled'}" %>
+			<% else %>
+				<%= button_tag(type:'button',class:"clear button icon",data:{toggle:"offCanvas#{k}"}) do %>
+					<%= button_icon(k,v) %>	
+				<% end %>
+			<% end %>
+		</div>
+	<% end%>
+	</div>
+</footer>

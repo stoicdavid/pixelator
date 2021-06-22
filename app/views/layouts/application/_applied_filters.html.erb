@@ -1,0 +1,19 @@
+<div class="grid-container grid-padding-x">
+	<% if (@picture.variations.size>1) %>
+		<h5>Selecciona algún filtro</h5>
+			<% @picture.variations.in_groups_of(9,false).each do |group| %>
+				<div class='grid-x align-middle text-center'>
+					<% group.each do |variation| %>
+						<div class="cell auto ">
+							<% if @variation.filter_type == variation.filter_type %>
+							<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"hollow button success disabled" if variation.image.attached? %>
+							<% else %>
+							<%=link_to variation.filter_type, {controller:'welcome',id:variation.id}, class:"hollow button success" if variation.image.attached? %>								
+							<% end %>
+							<%= link_to icon("trash",class:""), variation, method: :delete, class:"clear button alert", data: {remote: true, confirm: "¿Estás seguro que deseas eliminar el filtro aplicado?"} if variation.image.attached?%>
+						</div>
+					<% end %>
+					</div>
+			<% end %>
+	<% end %>
+</div>

@@ -9,8 +9,111 @@
  * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
- *
- *= require bootstrap
  *= require_tree .
  *= require_self
  */
+
+
+@import '/foundation-sites/scss/settings/settings';
+@import '/foundation-sites/scss/foundation';
+@import '/motion-ui/motion-ui';
+@import '/foundation-icons/foundation-icons';
+
+    // Include everything by default. Pick individual components from here instead
+    // https://github.com/foundation/foundation-sites/blob/develop/scss/foundation.scss#L80
+
+@include foundation-everything();
+@include foundation-range-input;
+
+body, html {
+    background-color: #161616;
+    color: #fff;
+}
+
+.title-bar{
+	background-color: #262626;
+}
+
+
+.card{
+    background-color: rgba(0,0,0, 0.3);
+    border-radius: 8px;
+	color: #69686A;
+}
+
+
+.image-box {
+    background-color: rgba(0, 0, 0, .3);
+    border-radius: 8px;
+}
+.canvas {
+    background-image: url(image_path("square-bg.png"));
+    background-position: 50% 50%;
+    background-size: 40px 40px;
+    z-index:1
+}
+
+.icon {
+    border-radius: 10%;
+    color: rgba(255, 255, 255, .7);
+	font-size:11px;
+    min-height: 30px;
+    min-width: 30px
+}
+.icon-2 {
+    border-radius: 10%;
+    color: #CACACA;
+	font-size:8px;
+    min-height: 24px;
+    min-width: 24px
+}
+
+.option-menu{
+	font-size:10px;
+}
+
+.alt-menu{
+	background-color: #3E3E3E;
+}
+
+.footer{
+	background-color: #262626;
+	position:fixed; 
+	bottom:0;
+	z-index:100000;
+	padding:10px;
+	color: white
+}
+//debugging
+
+grid-container{
+	background-color:yellow;
+	border-style: solid;
+	  border-color: #32C5C4;
+	  border-width: 3px;
+}
+
+
+
+grid-margin-x{
+	border-style: solid;
+	  border-color: black;
+	  border-width: 3px;
+}
+
+
+grid-x{
+	background-color:blue;
+	border-style: solid;
+	  border-color: #71237A;
+	  border-width: 3px;
+}
+
+
+
+cell{
+	background-color:white;
+	border-style: solid;
+	  border-color: red;
+	  border-width: 3px;
+}

@@ -1,0 +1,21 @@
+<div class='cell auto'>
+    <h6>Filtro Alto Contraste e Inverso</h6>
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture do |form| %>
+				<%= form.fields_for :variation do |f| %>
+					<% if @picture.remaining_filters.include? 'Alto Contraste' %>
+						<%= f.hidden_field :filter_type => 'Alto Contraste' %>
+						<%= form.submit 'Alto Contraste', value: 'Alto Contraste', class: 'btn btn-outline-primary col-sm-6' %>
+					<% else %>
+						<%= f.hidden_field :filter_type => 'Alto Contraste' %>
+						<%= form.submit 'Alto Contraste',disabled:true, value: 'Alto Contraste', class: 'btn btn-outline-primary col-sm-6'%>	
+					<% end %>									
+					<% if @picture.remaining_filters.include? 'Inverso' %>										
+						<%= form.submit 'Inverso', class: 'btn btn-outline-primary col-sm-5 align-self-end'%>
+					<% else %>
+						<%= form.submit 'Inverso', disabled:true, class: 'btn btn-outline-primary col-sm-5 align-self-end'%>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+</div>
