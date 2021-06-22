@@ -73,7 +73,7 @@ class PicturesController < ApplicationController
     g = params[:picture][:variation][:green]
     b = params[:picture][:variation][:blue]
 
-    variation.component(r,g,b) if filter == 'Componente RGB'
+    variation.component(r,g,b) if filter == 'Mica RGB'
     variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb)
 
     respond_to do |wants|

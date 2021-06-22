@@ -14,7 +14,7 @@
  */
 
 
-@import '/foundation-sites/scss/settings/settings';
+@import 'settings';
 @import '/foundation-sites/scss/foundation';
 @import '/motion-ui/motion-ui';
 @import '/foundation-icons/foundation-icons';
@@ -76,6 +76,22 @@ body, html {
 	background-color: #3E3E3E;
 }
 
+#filler-red{
+	background-color: $alert-color;
+}
+
+#filler-green{
+	background-color: $success-color;
+}
+
+#filler-blue{
+	background-color: $primary-color;
+}
+
+.input:focus {
+    background-color: green;
+}
+
 .footer{
 	background-color: #262626;
 	position:fixed; 
@@ -84,6 +100,9 @@ body, html {
 	padding:10px;
 	color: white
 }
+
+
+
 //debugging
 
 grid-container{

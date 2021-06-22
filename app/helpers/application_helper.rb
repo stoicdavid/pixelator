@@ -31,7 +31,18 @@ module ApplicationHelper
     end
   end
   
-
+  def slider(position,max,step,reference,idx)
+    content_tag(:div, class:"slider",:'data-slider'=>'',:'data-initial-start'=>position,:'data-step'=>step,:'data-end'=>max) do
+      handler(reference,idx)
+    end
+  end
+  
+  def handler(reference,idx)
+    capture do
+      concat tag.span class:"slider-handle",:'data-slider-handle'=>'',role:'slider',tabindex:'1',:'aria-controls'=>reference,id:idx
+      concat tag.span class:"slider-fill",:'data-slider-fill'=>'',id:idx
+    end
+  end
   
   
 end

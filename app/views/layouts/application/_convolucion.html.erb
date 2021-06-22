@@ -1,18 +1,18 @@
-<div class='cell auto'>
+<div class='grid-container'>
     <h6>Filtros de convolución</h6>
 	  	<% if @picture.image.attached?%>
 			<%= form_with model: @picture do |form| %>							
 				<%= form.fields_for :variation do |f| %>
-						<div class="row">
-							<div class="col">
+
 								<% if @picture.remaining_conv_filters.size <1 %>
 									<p>Todos los filtros han sido aplicados</p>
 								<% else %>
+								<div class='cell auto'>
 									<%= f.select :filter_type, @picture.remaining_conv_filters %>											
-									<%=form.submit "Aplicar Filtro", class:"btn btn-outline-secondary"  %>			
+									<%=form.submit "Aplicar Filtro", class:"hollow button"  %>									
+								</div>
+
 								<% end %>
-							</div>
-						</div>
 				<% end %>
 			<% end %>
 		<% end %>
