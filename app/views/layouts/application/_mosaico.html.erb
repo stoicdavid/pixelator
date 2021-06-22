@@ -9,13 +9,13 @@
 							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
 						</div>
 						<div class='cell auto'>
-							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10',max:@picture.image.metadata[:width]/2, class:'data-entry'%>
+							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10', class:'data-entry'%>
 						</div>
 						<div class='cell auto'>
 							<%= f.label :mheight_param, "Alto", class: 'text-right middle',for:'alto'%>
 						</div>
 						<div class='cell auto'>							
-							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10',max:@picture.image.metadata[:width]/2, class:'data-entry' %>
+  							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
 						</div>
 						<div class="cell auto">
 							<%= f.submit 'Mosaico', class: 'hollow button'%>
