@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ffi/ffi.git
-  revision: 931efbe3581fd6832291024cc338aaf987f1761b
+  revision: 1880a7182e37e7b1d14b1464eaec76d1ce2407d7
   submodules: true
   specs:
     ffi (1.15.3)

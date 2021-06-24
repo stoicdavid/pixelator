@@ -45,8 +45,15 @@
 		  <% end %>
 
 		  <div class="card-section">
-	  	
-			<%= image_tag @variation.image, class:"image-box canvas" %>
+			
+			<%= link_to "Abre imagen", html_image_path(@variation), target: "_blank" if @variation.big?%>
+
+			<%= @variation.image.download.html_safe if @variation.image.content_type == 'text/html' unless @variation.big? %>
+			
+			<%= image_tag @variation.image, class:"image-box canvas" if @variation.image.content_type.start_with? 'image' %>
+
+
+			
 		  </div>
 		  <div class="card-section">
 			<p>Filtro aplicado:<%= @variation.filter_type if @picture.variations.exists?%></p>

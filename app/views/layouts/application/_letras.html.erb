@@ -1,10 +1,42 @@
-<div class="grid-x grid-margin-x">
-  <div class="cell small-10">
-    <div class="slider" data-slider data-initial-start="50">
-      <span class="slider-handle"  data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput1"></span>
-    </div>
-  </div>
-  <div class="cell small-2">
-    <input type="number" id="sliderOutput1">
-  </div>
+<div class="grid-x grid-margin-x text-center align-stretch">
+
+	
+	<% ascii_menu.each do |k,v| %>
+		<div class="cell auto">
+			
+				<%= link_to button_icon(k,v), 
+				          picture_path(picture:{variation:{filter_type:k.titleize}},commit:k.titleize,id:@picture.id), 
+				          method: :patch,
+						  class:"clear button icon #{@picture.remaining_filters.include?(k.titleize) ? '' : 'disabled'}" unless @picture.id.nil?%>
+		</div>
+	<% end%>
+	
 </div>
+
+<h6>Filtro Una Letra</h6>
+  	<% if @picture.image.attached?%>
+
+		<%= form_with model: @picture do |form| %>
+				<div class='grid-x grid-padding-x '>
+					<%= form.fields_for :variation do |f| %>
+						<div class='cell auto'>
+							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
+						</div>
+						<div class='cell auto'>
+							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10', class:'data-entry'%>
+						</div>
+						<div class='cell auto'>
+							<%= f.label :mheight_param, "Alto", class: 'text-right middle',for:'alto'%>
+						</div>
+						<div class='cell auto'>							
+  							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
+						</div>
+						<div class="cell auto">
+							<%= f.submit 'Una Letra', class: 'hollow button'%>
+						</div>
+					</div>
+					<% end %>
+
+		<% end %>
+
+	<% end %>

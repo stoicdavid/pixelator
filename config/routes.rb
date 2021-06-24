@@ -8,5 +8,6 @@ Rails.application.routes.draw do
   root to: "welcome#index"  
   
   resources :variations
+  get '/variations/:id/html_image', to: 'variations#html_image', as: 'html_image'
   
 end

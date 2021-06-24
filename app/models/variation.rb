@@ -1,7 +1,7 @@
 class Variation < ApplicationRecord
-  include BasicFilters, ConvolutionFilters
+  include BasicFilters, ConvolutionFilters, LetterFilters
   
-  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss']
+  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss','Una Letra','Letra Gris','Simula Grises','16 Colores','16 Grises','Letrero','Domino Blancas','Domino Negras','Naipes']
   attr_accessor :variations_attributes
   belongs_to :picture
   has_one_attached :image
@@ -11,6 +11,10 @@ class Variation < ApplicationRecord
   # metodo para obtener los filtros de convolucion y mostrarlos en la vista
   def self.convolution_filters
     FILTER_TYPES[14..19]
+  end
+  
+  def big?
+    Variation::FILTER_TYPES[22].include? self.filter_type
   end
   # metodo para acceder al color rojo
   def red
@@ -91,7 +95,7 @@ class Variation < ApplicationRecord
       alpha = im.bandsplit[3] 
       im = im.flatten background: 255
     end
-    
+    im_html = ""
     #Se aplica el filtro correspondiente, para el caso de escalas de grises, todas las imágenes pasan de 3 bandas de color a una banda
     case filter_asked
     when "Brillo"
@@ -100,12 +104,23 @@ class Variation < ApplicationRecord
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     when "Mica RGB"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, c_rgb)
+    when "Una Letra", "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
+      im_html = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
     end
     
     # Finalmente se envia a guarda el filtro correspondiente en la base de datos
-    variant_save(im,alpha,filter_asked)
+    if im_html.empty?
+      variant_save(im,alpha,filter_asked)
+    else
+      filext =".html"
+      suffix = filter_asked.empty? ? 'support' : filter_asked
+      filename = "#{im.filename.to_s.split('.').first}_#{suffix}"+filext
+      image.attach(io: StringIO.new(im_html), filename:filename, content_type:'text/html')
+      self[:filter_type] = filter_asked
+      im_html = ""
+    end
     
   end
   
