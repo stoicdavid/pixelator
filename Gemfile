@@ -21,7 +21,7 @@ gem 'jbuilder', '~> 2.7'
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-gem 'ffi', github: 'ffi/ffi', submodules: true
+gem 'ffi'
 # Use Active Storage variant
 gem 'image_processing'
 gem 'ruby-vips'
@@ -30,6 +30,7 @@ gem 'mini_magick'
 gem 'foundation-rails'
 gem 'autoprefixer-rails'
 
+gem 'get_process_mem'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false

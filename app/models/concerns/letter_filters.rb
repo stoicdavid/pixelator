@@ -84,36 +84,53 @@ module LetterFilters
   
   
   def apply_simula_grises(im,horizontal,vertical)
-    
+    GC.start
+    allocated_before = GC.stat(:total_allocated_objects)
+    freed_before = GC.stat(:total_freed_objects)
+    mem = GetProcessMem.new
+    puts "Memory usage before: #{mem.mb} MB."
+
+
     
     im = apply_gray3(im)
     
     # Iteracion en toda la imagen para obtener los mosaicos
     # se utiliza el método mutate de ruby-vips para aplicar los cambios sobre la imagen
       html_image = "<pre>"
-      (0...im.height).each do |h|
+      (0...im.height).lazy.each do |h|
         html_line = ""
-        (0...im.width).each do |w|
+        gray_values = im.extract_area(0,h,im.width,1).to_a
+        (0...im.width).lazy.each do |w|
 
           # Se obtiene el promedio del area deseada por cada banda de color
           pixel_value = im.getpoint(w,h)
           # Se aplica el promedio a toda el area en la nueva imagen
           #result.draw_rect! [ravg,gavg,bavg],w,h,wstep,hstep, fill: true
           char = gray_char(pixel_value)
-          html_line << tag.span(char)
+          html_line << tag.span(char).freeze
           #html_line << char
         #  helper.capture do
         #    helper.concat helper.tag.span 'M', style:"color:rgba(1,2,2,0)"
         #    helper.concat helper.tag.span 'M', style:"color:rgba(1,2,2,0)"
         #  end
         end
-        html_image << tag.p(html_line.html_safe, style:"margin:0px; line-height:14px")
+        html_image << tag.p(html_line.html_safe, style:"margin:0px; line-height:14px").freeze
+        html_line = nil
         #html_image << html_line
         #html_image << '\n'
         #html_image << tag.br(style:"display:block; margin-bottom: -.4em", type)
       end
       html_image << "</pre>"
+      
+      mem = GetProcessMem.new
+      puts "Memory usage after: #{mem.mb} MB."
+      GC.start
+      allocated_after = GC.stat(:total_allocated_objects)
+      freed_after = GC.stat(:total_freed_objects)
+      puts "Total objects allocated: #{allocated_after - allocated_before}"
+      puts "Total objects freed: #{freed_after - freed_before}"
       return html_image
+      html_image = nil
   end
   
   def apply_16_colores(im,horizontal,vertical)

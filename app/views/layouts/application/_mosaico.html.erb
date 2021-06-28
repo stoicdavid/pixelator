@@ -2,8 +2,8 @@
 <h6>Filtro Mosaico</h6>
   	<% if @picture.image.attached?%>
 
-		<%= form_with model: @picture do |form| %>
-				<div class='grid-x grid-padding-x '>
+		<%= form_with model: @picture, class:'grid-x grid-padding-x' do |form| %>
+
 					<%= form.fields_for :variation do |f| %>
 						<div class='cell auto'>
 							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
@@ -20,7 +20,7 @@
 						<div class="cell auto">
 							<%= f.submit 'Mosaico', class: 'hollow button'%>
 						</div>
-					</div>
+
 					<% end %>
 
 		<% end %>

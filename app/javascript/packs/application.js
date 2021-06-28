@@ -11,6 +11,7 @@ import * as ActiveStorage from "@rails/activestorage"
 //require("@rails/activestorage").start()
 
 import "channels"
+import "custom"
 
 //require('@client-side-validations/client-side-validations')
 //require("easy-autocomplete")

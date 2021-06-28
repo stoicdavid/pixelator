@@ -1,8 +1,7 @@
 <div class='grid-container'>
     <h6>Filtro Componente RGB</h6>
 	  	<% if @picture.image.attached?%>
-			<%= form_with model: @picture do |form| %>
-					<div class='grid-x grid-margin-x'>
+			<%= form_with model: @picture, class:'grid-x grid-margin-x' do |form| %>
 				<%= form.fields_for :variation do |f| %>
 							<div class='cell auto'>
 								
@@ -33,7 +32,6 @@
 									
 
 				<% end %>
-					</div>
 			<% end %>
 
 		<% end %>

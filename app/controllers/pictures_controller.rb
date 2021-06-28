@@ -59,22 +59,18 @@ class PicturesController < ApplicationController
   def update
     @picture = Picture.find params[:id]
     variation = @picture.variations.build(picture_params)
-    filter = ''
-    if Variation.convolution_filters.include? params[:picture][:variation][:filter_type]
-        filter = params[:picture][:variation][:filter_type]
-      else
-        filter = params[:commit]        
-    end
-    
+    filter = params[:commit]
     bright = params[:picture][:variation][:bright_param]
     mwidth = params[:picture][:variation][:mwidth_param]
     mheight = params[:picture][:variation][:mheight_param] 
     r = params[:picture][:variation][:red]
     g = params[:picture][:variation][:green]
     b = params[:picture][:variation][:blue]
-
+    phrase = params[:picture][:variation][:phrase]
+    coorext = params[:picture][:variation][:coorext]
+    
     variation.component(r,g,b) if filter == 'Mica RGB'
-    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb)
+    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb,phrase)
 
     respond_to do |wants|
       if @picture.update(picture_params)

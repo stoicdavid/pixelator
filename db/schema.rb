@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_31_054121) do
+ActiveRecord::Schema.define(version: 2021_06_25_134403) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -55,6 +58,8 @@ ActiveRecord::Schema.define(version: 2021_03_31_054121) do
     t.integer "mwidth_param"
     t.integer "mheight_param"
     t.string "rgb"
+    t.string "phrase"
+    t.string "coorext"
     t.index ["picture_id"], name: "index_variations_on_picture_id"
   end
 

@@ -1,0 +1,43 @@
+
+	
+
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture do |form| %>
+
+				<%= form.fields_for :variation do |f| %>
+							<div class='cell auto'>
+								<%= f.label 'Frase', class: 'text-right middle'  %>
+							</div>
+							<div class='cell auto'>
+								<%= f.text_field :phrase %>
+							</div>
+							<div class='cell auto'>
+								<%= f.label 'Posición por omisión: Centrada', class: 'text-right middle'  %>
+							</div>
+							<div class='cell auto'>
+								<%= label_tag 'diagonal','¿Texto en diagonal?', class: 'text-right middle' %>
+							</div>
+							<div class='cell auto'>
+								<div class="switch medium">
+								  <input class="switch-input" id="yes-no" type="checkbox" name="exampleSwitch">
+								  <label class="switch-paddle" for="yes-no">
+								    <span class="switch-active" aria-hidden="true">Yes</span>
+								    <span class="switch-inactive" aria-hidden="true">No</span>
+								  </label>
+								</div>								
+							</div>
+							<div class='cell auto'>
+								<%= f.label 'Posicion arbitraria', class: 'text-right middle'  %>
+							</div>
+							<div class='cell auto'>								
+								<%= f.text_field :coorext, id:'position' %>
+							</div>
+							<div class='cell align-self-center'>								
+								<%= f.submit 'Marca Agua', value: 'Marca Agua', class: 'button hollow' %>
+							</div>
+				<% end %>
+
+			<% end %>
+
+		<% end %>
+

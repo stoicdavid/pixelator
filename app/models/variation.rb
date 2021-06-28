@@ -1,5 +1,5 @@
 class Variation < ApplicationRecord
-  include BasicFilters, ConvolutionFilters, LetterFilters
+  include BasicFilters, ConvolutionFilters, LetterFilters, WatermarkFilters
   
   FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss','Una Letra','Letra Gris','Simula Grises','16 Colores','16 Grises','Letrero','Domino Blancas','Domino Negras','Naipes']
   attr_accessor :variations_attributes
@@ -16,11 +16,17 @@ class Variation < ApplicationRecord
   def big?
     Variation::FILTER_TYPES[22].include? self.filter_type
   end
+  
+  def positioning(x,y,w,h)
+    self.coorext = [x,y,w,h].join(' ') if coorext.nil?
+  end
+  
+  
   # metodo para acceder al color rojo
   def red
     rgb.split(' ',3)[0] if rgb
   end
-
+  
   # metodo para asignar el color rojo
   def red=(r)
     if rgb.nil? && r.present?
@@ -71,7 +77,7 @@ class Variation < ApplicationRecord
 
   
   
-  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0')
+  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0',phrase = '')
     
     # Método para aplicar filtros básicos o filtros de convolución
     # Se obtiene el método solicitiado de entre los disponibles en la constante FILTER_TYPES
@@ -95,7 +101,7 @@ class Variation < ApplicationRecord
       alpha = im.bandsplit[3] 
       im = im.flatten background: 255
     end
-    im_html = ""
+    im_html = ''
     #Se aplica el filtro correspondiente, para el caso de escalas de grises, todas las imágenes pasan de 3 bandas de color a una banda
     case filter_asked
     when "Brillo"
@@ -106,6 +112,8 @@ class Variation < ApplicationRecord
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, c_rgb)
     when "Una Letra", "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
       im_html = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
+    when "Marca Agua"
+      im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, phrase)
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
     end
@@ -119,7 +127,7 @@ class Variation < ApplicationRecord
       filename = "#{im.filename.to_s.split('.').first}_#{suffix}"+filext
       image.attach(io: StringIO.new(im_html), filename:filename, content_type:'text/html')
       self[:filter_type] = filter_asked
-      im_html = ""
+      im_html = nil
     end
     
   end

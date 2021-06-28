@@ -29,10 +29,10 @@
 -->
 
 		<% bottom_bar_menu_options.each do |k,v| %>
-			<%= content_tag :div,class:"off-canvas position-bottom alt-menu text-center", id:"offCanvas#{k}",'data-off-canvas'=>'' do %>
+			<%= content_tag :div,class:"off-canvas position-bottom alt-menu text-center grid-container full", id:"offCanvas#{k}",'data-off-canvas'=>'' do %>
 				<%= render :partial => "layouts/application/#{k.underscore}" %>
 			<% end %>
-		<% end %>
+		<% end unless @picture.id.nil? %>
 
 		</div>
 		<%= render('layouts/application/bottom_bar') unless @picture.id.nil? %>

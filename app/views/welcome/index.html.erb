@@ -14,7 +14,7 @@
 			<div class="card-section">
 
 					<% if @picture.image.attached? %>
-					<%= image_tag @picture.image, class:"image-box canvas" %>
+					<%= image_tag @picture.image, class:"image-box canvas", id:"canvas-original" %>
 					<% else %>
 
 					<h6>Por favor carga una imágen jpg o png no más allá de 5MB </h6>

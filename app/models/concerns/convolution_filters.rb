@@ -240,7 +240,7 @@ module ConvolutionFilters
     filter_width = mfilter[0].size
     filter_height = mfilter.size
     mgrid = Matrix.build(filter_width,filter_height) {|row,col| grid.to_a.reverse[row][col][0]}    
-    pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2))
+    pad_image = image.embed(offset,offset,image.width+(offset*2),image.height+(offset*2),extend: :mirror)
     # alto y ancho de la nueva imagen
     iheight = image.height
     iwidth = image.width
