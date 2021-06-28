@@ -1,8 +1,8 @@
-
+<div class='grid-container full'>
 	
-
+<h5>Configura la marca de agua</h5>
 	  	<% if @picture.image.attached?%>
-			<%= form_with model: @picture do |form| %>
+			<%= form_with model: @picture, class:'grid-x grid-margin-x' do |form| %>
 
 				<%= form.fields_for :variation do |f| %>
 							<div class='cell auto'>
@@ -41,3 +41,4 @@
 
 		<% end %>
 
+</div>

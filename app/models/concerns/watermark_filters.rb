@@ -1,6 +1,6 @@
 module WatermarkFilters
   
-  def apply_marca_agua2(im, phrase)
+  def apply_marca_agua2(im, phrase )
     
     
     text = Vips::Image.text(phrase, font:"Sans 12", width:500, align: :centre, dpi: 300)
@@ -24,12 +24,12 @@ module WatermarkFilters
     return im.composite overlay, :over
   end
   
-  def apply_marca_agua(im, phrase)
+  def apply_marca_agua(im, phrase, rotation= -45,position='',alpha=1.0)
     
     
     # make the text mask
     text = Vips::Image.text phrase, width: 200, dpi: 200, font: "sans bold"
-    text = text.rotate(-45)
+    text = text.rotate(rotation)
     # make the text transparent
     text = (text * 0.6).cast(:uchar)
     text = text.gravity :centre, 200, 200

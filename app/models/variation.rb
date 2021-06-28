@@ -101,7 +101,7 @@ class Variation < ApplicationRecord
       alpha = im.bandsplit[3] 
       im = im.flatten background: 255
     end
-    im_html = ''
+    im_html = []
     #Se aplica el filtro correspondiente, para el caso de escalas de grises, todas las imágenes pasan de 3 bandas de color a una banda
     case filter_asked
     when "Brillo"
@@ -111,7 +111,7 @@ class Variation < ApplicationRecord
     when "Mica RGB"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, c_rgb)
     when "Una Letra", "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
-      im_html = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
+      im_html << self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     when "Marca Agua"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, phrase)
     else
@@ -125,9 +125,9 @@ class Variation < ApplicationRecord
       filext =".html"
       suffix = filter_asked.empty? ? 'support' : filter_asked
       filename = "#{im.filename.to_s.split('.').first}_#{suffix}"+filext
-      image.attach(io: StringIO.new(im_html), filename:filename, content_type:'text/html')
+      image.attach(io: StringIO.new(im_html.join('')), filename:filename, content_type:'text/html')
       self[:filter_type] = filter_asked
-      im_html = nil
+      im_html = []
     end
     
   end
