@@ -67,10 +67,13 @@ class PicturesController < ApplicationController
     g = params[:picture][:variation][:green]
     b = params[:picture][:variation][:blue]
     phrase = params[:picture][:variation][:phrase]
+    rotation = !params[:picture][:variation][:rotation].to_i.zero?
+    repeat = !params[:picture][:variation][:repeat].to_i.zero?
+    alpha = params[:picture][:variation][:alpha].to_f / 100
     coorext = params[:picture][:variation][:coorext]
     
     variation.component(r,g,b) if filter == 'Mica RGB'
-    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb,phrase)
+    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb,phrase,rotation,repeat,alpha,coorext)
 
     respond_to do |wants|
       if @picture.update(picture_params)

@@ -24,17 +24,43 @@ module WatermarkFilters
     return im.composite overlay, :over
   end
   
-  def apply_marca_agua(im, phrase, rotation= -45,position='',alpha=1.0)
+  def apply_marca_agua(im, phrase, rotation=true,repeat=true,transparent=1.0,coor='')
     
+    rot = rotation ? -45 : 0
+
+    text_width = rotation ? im.height : im.width
+    
+    text_dpi = im.width
+    puts coor
+    if repeat
+      text_width = text_width / 2
+      text_dpi = text_dpi / 2
+    end
+    
+    iw = im.width
+    ih = im.height
+    
+    if !coor.empty?
+      iw = coor.split(' ')[1].to_i
+      ih = coor.split(' ')[3].to_i  
+    end
+    
+    extension = text_width/2
     
     # make the text mask
-    text = Vips::Image.text phrase, width: 200, dpi: 200, font: "sans bold"
-    text = text.rotate(rotation)
+    text = Vips::Image.text phrase, width: extension, dpi: text_dpi, font: "sans bold"
+    text = text.rotate(rot)
     # make the text transparent
-    text = (text * 0.6).cast(:uchar)
-    text = text.gravity :centre, 200, 200
-    text = text.replicate 1 + im.width / text.width, 1 + im.height / text.height
-    text = text.crop 0, 0, im.width, im.height
+    text = (text * transparent).cast(:uchar)
+
+    if repeat
+      text = text.gravity :centre, extension, extension
+      text = text.replicate 1 + im.width / text.width, 1 + im.height / text.height
+      text = text.crop 0, 0, im.width, im.height
+    else
+      puts iw, ih
+      text = text.gravity :centre, iw, ih
+    end
 
     # we make a constant colour image and attach the text mask as the alpha
     overlay = (text.new_from_image [255, 128, 128]).copy interpretation: :srgb
@@ -42,6 +68,7 @@ module WatermarkFilters
 
     # overlay the text
     return im.composite overlay, :over
+    #return im.flatten background: 255
   end
   
 end

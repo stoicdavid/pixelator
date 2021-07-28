@@ -13,7 +13,7 @@
 	<body>
 		<%= render :partial => 'layouts/application/top_bar' %>
 
-		<div class="off-canvas-wraper">
+		<div class="off-canvas-wrapper">
 
 			<div class="grid-container" id="main-container" >
 				<%= render :partial => 'layouts/application/alerts' %>
@@ -29,7 +29,8 @@
 -->
 
 		<% bottom_bar_menu_options.each do |k,v| %>
-			<%= content_tag :div,class:"off-canvas position-bottom alt-menu text-center grid-container full", id:"offCanvas#{k}",'data-off-canvas'=>'' do %>
+		<% k == 'MarcaAgua' ? behavior = 'off-canvas-absolute' : behavior = 'off-canvas' %>
+			<%= content_tag :div,class:"#{behavior} position-bottom alt-menu text-center grid-container full is-closed", id:"offCanvas#{k}",'data-off-canvas'=>'' do %>
 				<%= render :partial => "layouts/application/#{k.underscore}" %>
 			<% end %>
 		<% end unless @picture.id.nil? %>

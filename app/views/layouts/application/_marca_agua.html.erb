@@ -12,19 +12,32 @@
 								<%= f.text_field :phrase %>
 							</div>
 							<div class='cell auto'>
-								<%= f.label 'Posición por omisión: Centrada', class: 'text-right middle'  %>
+								<%= label_tag 'diagonal','Texto en diagonal:', class: 'text-right ' %>
+								<br>
+								<%= label_tag 'diagonal','Repetir en la imagen:', class: 'text-right' %>								
 							</div>
 							<div class='cell auto'>
-								<%= label_tag 'diagonal','¿Texto en diagonal?', class: 'text-right middle' %>
-							</div>
-							<div class='cell auto'>
-								<div class="switch medium">
-								  <input class="switch-input" id="yes-no" type="checkbox" name="exampleSwitch">
-								  <label class="switch-paddle" for="yes-no">
-								    <span class="switch-active" aria-hidden="true">Yes</span>
-								    <span class="switch-inactive" aria-hidden="true">No</span>
+								<div class="switch small">
+									<%= f.check_box :rotation, class:'switch-input text-right ', id:'diag' %>
+								  <label class="switch-paddle" for="diag">
+								    <span class="switch-active" aria-hidden="true">SI</span>
+								    <span class="switch-inactive" aria-hidden="true">NO	</span>
 								  </label>
 								</div>								
+								<div class="switch small">
+									<%= f.check_box :repeat, class:'switch-input text-right ', id:'repeat' %>
+								  <label class="switch-paddle" for="repeat">
+								    <span class="switch-active" aria-hidden="true">SI</span>
+								    <span class="switch-inactive" aria-hidden="true">NO	</span>
+								  </label>
+								</div>
+							</div>
+							<div class='cell auto'>
+								<%= f.label 'Opacidad', class: 'text-right middle'  %>
+							</div>
+							<div class='cell auto'>								
+								<%= slider(50,100,10,'alpha','filler-blue') %>
+								<%= f.number_field :alpha, id:'alpha' %>
 							</div>
 							<div class='cell auto'>
 								<%= f.label 'Posicion arbitraria', class: 'text-right middle'  %>
@@ -32,7 +45,7 @@
 							<div class='cell auto'>								
 								<%= f.text_field :coorext, id:'position' %>
 							</div>
-							<div class='cell align-self-center'>								
+							<div class='cell auto grid-x align-middle'>								
 								<%= f.submit 'Marca Agua', value: 'Marca Agua', class: 'button hollow' %>
 							</div>
 				<% end %>
@@ -40,5 +53,7 @@
 			<% end %>
 
 		<% end %>
-
+<button class="close-button" aria-label="Close menu" type="button" data-close>
+  <span aria-hidden="true">&times;</span>
+</button>
 </div>

@@ -105,11 +105,38 @@ body, html {
     font-family: "Courier New", Courier, monospace; 
 }
 
+@font-face {
+   font-family: 'Domino Blancas';
+   src: url('Lasvwd__.ttf');
+}
+
+@font-face {
+   font-family: 'Domino Negras';
+   src: url('Lasvbld_.ttf');
+}
+
+@font-face {
+   font-family: 'Naipes';
+   src: url('PLAYCRDS.TTF');
+}
+
 //<div class="monospaced">
   // Put your ASCII art here
 ////</div>
 
 //debugging
+
+.domino-blancas {
+	font-family: 'Domino Blancas' 
+}
+
+.domino-negras {
+	font-family: 'Domino Negras' 
+}
+
+.naipes {
+	font-family: 'Naipes' 
+}
 
 grid-container{
 	background-color:yellow;
@@ -117,7 +144,6 @@ grid-container{
 	  border-color: #32C5C4;
 	  border-width: 3px;
 }
-
 
 
 grid-margin-x{

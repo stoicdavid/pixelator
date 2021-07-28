@@ -77,7 +77,7 @@ class Variation < ApplicationRecord
 
   
   
-  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0',phrase = '')
+  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0',phrase = '', rotation=false, repeat=false,transparent=1.0,coordinates='')
     
     # Método para aplicar filtros básicos o filtros de convolución
     # Se obtiene el método solicitiado de entre los disponibles en la constante FILTER_TYPES
@@ -113,7 +113,7 @@ class Variation < ApplicationRecord
     when "Una Letra", "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
       im_html << self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     when "Marca Agua"
-      im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, phrase)
+      im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, phrase,rotation,repeat,transparent,coordinates)
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
     end
