@@ -107,17 +107,17 @@ body, html {
 
 @font-face {
    font-family: 'Domino Blancas';
-   src: url('Lasvwd__.ttf');
+   src: asset-url('Lasvwd__.ttf');
 }
 
 @font-face {
    font-family: 'Domino Negras';
-   src: url('Lasvbld_.ttf');
+   src: asset-url('Lasvbld_.ttf');
 }
 
 @font-face {
    font-family: 'Naipes';
-   src: url('PLAYCRDS.TTF');
+   src: asset-url('PLAYCRDS.TTF');
 }
 
 //<div class="monospaced">
