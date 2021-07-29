@@ -140,6 +140,29 @@ Los filtros de convolución implementados son:
 * Sharpen
 * Emboss
 
+### Filtros con letras
+
+Los filtros implementados son:
+
+* Una letra - coloca una letra en la imágen coloreando con el color promedio de una región usando el filtro mosaico
+* Una letra gris - coloca una letra en la imágen colocando un valor de la escala de grises de una región usando el filtro mosaico
+* Simula Grises - Se simula la escala de grises con la densidad de color de una conjunto de caractéres, no se usa el filtro mosaico, se reemplaza pixel por pixel y se obtiene la imágen en html.
+* 16 colores - Se coloca una letra de un conjunto de caractéres, con el valor promedio de una región usando el filtro mosaico.
+* 16 grises - Se coloca una letra de un conjunto de caractéres, con el valor de gris de una región usando el filtro mosaico.
+* Letrero - Se reemplaza una región por una de las letras de un letrero hasta recorrer todo el letrero, este proceso se repite por tantas regiones se divida la imagen usando el filtro mosaico.
+* Domino Blancas - Se reemplaza una región de la imágen por un carácter de la fuente de domino en color blanco con puntos negros, usando las partes izquierdas y derechas de la fuente hasta cubrir toda la imágen.
+* Domino Negras - Se reemplaza una región de la imágen por un carácter de la fuente de domino en color negro con puntos blancos, usando las partes izquierdas y derechas de la fuente hasta cubrir toda la imágen.
+* Naipes - e reemplaza una región de la imágen por un carácter de la fuente naipes, seleccionando un palo de los naipes de forma aleatoria. y en orden de la densidad de color de la fuente.
+
+### Marca de Agua
+
+La marca de agua acepta un texto abierto y se puede configurar de esta forma
+
+* Texto en diagonal a lo largo de la imagen - Se coloca el texto a 45 grados y se sobrepone en la imagen, se calcula conforme el valor de la diagonal de la imágen.
+* Repetir la imagen - Si se quiere que la imagen se repita en toda la imagen, se puede combinar con la opción de 45 grados.
+* Se puede seleccionar la opacidad de la imagen, default 50% alfa
+* Se puede hacer clic en una posición arbitraria de la imágen y en esa posición aparecerá la marca de agua.
+
 ### Estructura de la aplicación y clases principales
 
 Rails utiliza el patrón de arquitectura MVC, por lo que las clases principales las encontrarás en la carpeta
@@ -158,6 +181,8 @@ La aplicación cuenta con dos modelos principales para almacenar las imagenes
 * ** Dependiendo del tipo de filtro, el método selecciona el correspondiente, lo opera y regresa una nueva imágen ya con el filtro aplicado.
 
 * ** La imágen con la variación se almancena en la base de datos en postgres para posterior consulta.
+
+Las clases donde se implementan los filtros se pueden consultar en https://github.com/stoicdavid/pixelator/tree/main/app/models/concerns
 
 ## Bibliotecas de imágenes empleadas
 
