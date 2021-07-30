@@ -22,7 +22,7 @@ pidfile "#{shared_dir}/pids/puma.pid"
 state_path "#{shared_dir}/pids/puma.state"
 activate_control_app
 
-preload_app!
+#preload_app!
 
 on_worker_boot do
   require "active_record"
