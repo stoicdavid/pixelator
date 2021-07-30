@@ -59,10 +59,7 @@ set :puma_worker_timeout, 3600
 set :puma_init_active_record, true
 set :branch, "main"
 set :puma_service_unit_env_file, '/home/deploy/apps/pixelator/.rbenv-vars'
-set :puma_service_unit_env_vars, %w[
-     RAILS_ENV=production
- ]
-
+set :puma_service_unit_env_vars, %w[RAILS_ENV=production]
 
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
