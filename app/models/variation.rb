@@ -1,7 +1,7 @@
 class Variation < ApplicationRecord
-  include BasicFilters, ConvolutionFilters, LetterFilters, WatermarkFilters
+  include BasicFilters, ConvolutionFilters, LetterFilters, WatermarkFilters, RecursiveFilters
   
-  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss','Una Letra','Letra Gris','Simula Grises','16 Colores','16 Grises','Letrero','Domino Blancas','Domino Negras','Naipes']
+  FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico','Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss','Una Letra','Letra Gris','Simula Grises','16 Colores','16 Grises','Letrero','Domino Blancas','Domino Negras','Naipes','Imagenes Recursivas','Imagenes Recursivas Color','Semitonos','Max Min','Dither Ordenado','Dither Disperso','Dither Random','Foto Mosaico']
   attr_accessor :variations_attributes
   belongs_to :picture
   has_one_attached :image
@@ -77,7 +77,7 @@ class Variation < ApplicationRecord
 
   
   
-  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0',phrase = '', rotation=false, repeat=false,transparent=1.0,coordinates='')
+  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0', phrase = '', rotation=false, repeat=false,transparent=1.0, coordinates='', color=false)
     
     # Método para aplicar filtros básicos o filtros de convolución
     # Se obtiene el método solicitiado de entre los disponibles en la constante FILTER_TYPES
@@ -110,10 +110,13 @@ class Variation < ApplicationRecord
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     when "Mica RGB"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, c_rgb)
-    when "Una Letra", "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
+    when "Una Letra", "Letra Gris","Simula Grises", "16 Colores", "16 Grises", "Letrero", "Domino Blancas", "Domino Negras", "Naipes"
       im_html << self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical)
     when "Marca Agua"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, phrase,rotation,repeat,transparent,coordinates)
+    when "Imagenes Recursivas"
+      im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical,color)
+      #im.write_to_file "pre123.jpg"
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
     end
@@ -139,7 +142,7 @@ class Variation < ApplicationRecord
   def variant_save(im,alpha=nil,filter_asked='')
     filext = nil    
     
-    if !alpha.nil? 
+    if !alpha.nil? && filter_asked != 'Imagenes Recursivas'
       filext = ".png"
       im = im.bandjoin(alpha)
     else

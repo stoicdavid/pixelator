@@ -196,9 +196,6 @@ module LetterFilters
           # Se obtiene el area deseada del tamaño del rectangulo
           color_avg = im.extract_area(w,h,wstep,hstep)
           # Se obtiene el promedio del area deseada por cada banda de color
-
-          color_avg = im.extract_area(w,h,wstep,hstep)
-          # Se obtiene el promedio del area deseada por cada banda de color
           s = color_avg.stats
           ravg = s.getpoint(4,1) [0]
           # Se aplica el promedio a toda el area en la nueva imagen
@@ -289,9 +286,6 @@ module LetterFilters
           # Se obtiene el area deseada del tamaño del rectangulo
           color_avg = im.extract_area(w,h,wstep,hstep)
           # Se obtiene el promedio del area deseada por cada banda de color
-
-          color_avg = im.extract_area(w,h,wstep,hstep)
-          # Se obtiene el promedio del area deseada por cada banda de color
           s = color_avg.stats
           ravg = s.getpoint(4,1) [0]
           # Se aplica el promedio a toda el area en la nueva imagen
@@ -335,9 +329,6 @@ module LetterFilters
           # Se obtiene el area deseada del tamaño del rectangulo
           color_avg = im.extract_area(w,h,wstep,hstep)
           # Se obtiene el promedio del area deseada por cada banda de color
-
-          color_avg = im.extract_area(w,h,wstep,hstep)
-          # Se obtiene el promedio del area deseada por cada banda de color
           s = color_avg.stats
           ravg = s.getpoint(4,1) [0]
           # Se aplica el promedio a toda el area en la nueva imagen
@@ -379,9 +370,6 @@ module LetterFilters
         html_line = ""
         (0...im.width-wstep).step(wstep).each do |w|
           # Se obtiene el area deseada del tamaño del rectangulo
-          color_avg = im.extract_area(w,h,wstep,hstep)
-          # Se obtiene el promedio del area deseada por cada banda de color
-
           color_avg = im.extract_area(w,h,wstep,hstep)
           # Se obtiene el promedio del area deseada por cada banda de color
           s = color_avg.stats

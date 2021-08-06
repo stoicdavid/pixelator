@@ -1,0 +1,37 @@
+<div class="grid-container">
+<h6>Imagenes Recursivas</h6>
+  	<% if @picture.image.attached?%>
+
+		<%= form_with model: @picture, class:'grid-x grid-padding-x' do |form| %>
+
+					<%= form.fields_for :variation do |f| %>
+						<div class='cell auto'>
+							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
+						</div>
+						<div class='cell auto'>
+							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10', class:'data-entry'%>
+						</div>
+						<div class='cell auto'>
+							<%= f.label :mheight_param, "Alto", class: 'text-right middle',for:'alto'%>
+						</div>
+						<div class='cell auto'>							
+  							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
+						</div>
+						<div class='cell auto'>							
+						<div class="switch small">
+							<%= f.check_box :color, class:'switch-input text-right ', id:'color' %>
+						  <label class="switch-paddle" for="color">
+						    <span class="switch-active" aria-hidden="true">SI</span>
+						    <span class="switch-inactive" aria-hidden="true">NO	</span>
+						  </label>
+						</div>
+						<div class="cell auto">
+							<%= f.submit 'Imagenes Recursivas', class: 'hollow button'%>
+						</div>
+						</div>
+					<% end %>
+
+		<% end %>
+
+	<% end %>
+</div>

@@ -47,10 +47,10 @@ module WatermarkFilters
     
     extension = text_width/2
     
-    # make the text mask
+    # Crea el texto
     text = Vips::Image.text phrase, width: extension, dpi: text_dpi, font: "sans bold"
     text = text.rotate(rot)
-    # make the text transparent
+    # Aplicar transparencia
     text = (text * transparent).cast(:uchar)
 
     if repeat
@@ -62,13 +62,13 @@ module WatermarkFilters
       text = text.gravity :centre, iw, ih
     end
 
-    # we make a constant colour image and attach the text mask as the alpha
+    # Crear una imagen con el texto
     overlay = (text.new_from_image [255, 128, 128]).copy interpretation: :srgb
     overlay = overlay.bandjoin text
 
-    # overlay the text
+    # Sobreponer el texto
     return im.composite overlay, :over
-    #return im.flatten background: 255
+    # return im.flatten background: 255
   end
   
 end

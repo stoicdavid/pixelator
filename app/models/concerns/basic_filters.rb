@@ -69,10 +69,12 @@ module BasicFilters
           # Se obtiene el promedio del area deseada por cada banda de color
           s = color_avg.stats
           ravg = s.getpoint(4,1) [0]
-          gavg = s.getpoint(4,2) [0]
-          bavg = s.getpoint(4,3) [0]
+          gavg = s.getpoint(4,2) [0] if color_avg.bands > 1
+          bavg = s.getpoint(4,3) [0] if color_avg.bands > 2
           # Se aplica el promedio a toda el area en la nueva imagen
-          result.draw_rect! [ravg,gavg,bavg],w,h,wstep,hstep, fill: true
+          result.draw_rect!([ravg,gavg,bavg],w,h,wstep,hstep, fill: true) if color_avg.bands > 2
+          result.draw_rect!([ravg,gavg],w,h,wstep,hstep, fill: true) if color_avg.bands > 1
+          result.draw_rect!([ravg],w,h,wstep,hstep, fill: true) if color_avg.bands == 1
         end
       end
     end

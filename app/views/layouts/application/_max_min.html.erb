@@ -1,0 +1,29 @@
+<div class="grid-container">
+<h6>Filtro Mosaico</h6>
+  	<% if @picture.image.attached?%>
+
+		<%= form_with model: @picture, class:'grid-x grid-padding-x' do |form| %>
+
+					<%= form.fields_for :variation do |f| %>
+						<div class='cell auto'>
+							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
+						</div>
+						<div class='cell auto'>
+							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10', class:'data-entry'%>
+						</div>
+						<div class='cell auto'>
+							<%= f.label :mheight_param, "Alto", class: 'text-right middle',for:'alto'%>
+						</div>
+						<div class='cell auto'>							
+  							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
+						</div>
+						<div class="cell auto">
+							<%= f.submit 'Mosaico', class: 'hollow button'%>
+						</div>
+
+					<% end %>
+
+		<% end %>
+
+	<% end %>
+</div>

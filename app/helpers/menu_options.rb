@@ -8,21 +8,26 @@ module MenuOptions
       "Inverso"=>'image',
       "MicaRGB"=>'front',
       "Convolucion"=>'intersect',
-      "Letras"=>'grip-vertical',
-      "MarcaAgua"=>'file-earmark-font-fill',                        
+      "Letras"=>'translate',
+      "MarcaAgua"=>'water',
+      "ImagenesRecursivas"=>'images',
+      "Semitonos"=>'circle-half',
+      "MaxMin"=>'sort-down',
+      "Dithering"=>'grip-horizontal',
+      "FotoMosaico"=>'camera2',
     }
   end
   
   def ascii_menu
     {
-      "UnaLetra"=>'file-font',
-      "LetraGris"=>'file-font-fill',
-      "SimulaGrises"=>'border-style',
-      "16Colores"=>'file-richtext',
-      "16Grises"=>'file-richtext-fill',
+      "UnaLetra"=>'file-ppt-fill',
+      "LetraGris"=>'file-ppt',
+      "SimulaGrises"=>'file-earmark-richtext',
+      "16Colores"=>'palette-fill',
+      "16Grises"=>'palette',
       "Letrero"=>'textarea-t',
-      "DominoBlancas"=>'intersect',
-      "DominoNegras"=>'grip-vertical',
+      "DominoBlancas"=>'dice-6',
+      "DominoNegras"=>'dice-6-fill',
       "Naipes"=>'suit-spade',                        
     }
   end

@@ -1,0 +1,27 @@
+<div class="grid-container">
+    <h5>Selecciona un filtro</h5>
+	<br>
+	  	<% if @picture.image.attached?%>
+			<%= form_with model: @picture, class:'grid-x grid-margin-x align-middle' do |form| %>							
+				<%= form.fields_for :variation do |f| -%>
+					<% Variation::FILTER_TYPES[0..8].in_groups_of(3).each do |group| %>
+	
+
+								<% group.each do |filter| %>
+								<div class="cell auto">								
+									<% if @picture.remaining_filters.include? filter %>
+										<%= f.hidden_field :filter_type, value: filter %>
+										<%=form.submit filter, class:"hollow button"  %>
+									<% else %>
+										<%= f.hidden_field :filter_type, value: filter %>
+										<%=form.submit filter, disabled: true, class:"hollow button secondary"  %>
+									<% end %>
+								</div>
+								<% end %>
+
+	
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+</div>
