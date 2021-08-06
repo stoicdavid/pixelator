@@ -27,6 +27,10 @@ gem 'image_processing'
 gem 'ruby-vips'
 gem 'mini_magick'
 
+#Security
+gem 'rack-attack'
+gem "dalli"
+
 gem 'foundation-rails'
 gem 'autoprefixer-rails'
 
