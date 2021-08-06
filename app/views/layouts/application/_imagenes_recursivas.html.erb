@@ -17,6 +17,9 @@
 						<div class='cell auto'>							
   							<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
 						</div>
+						<div class='cell auto'>
+							<%= f.label 'Con color?', class: 'text-right middle'  %>
+						</div>
 						<div class='cell auto'>							
 						<div class="switch small">
 							<%= f.check_box :color, class:'switch-input text-right ', id:'color' %>
@@ -25,9 +28,9 @@
 						    <span class="switch-inactive" aria-hidden="true">NO	</span>
 						  </label>
 						</div>
+						</div>
 						<div class="cell auto">
 							<%= f.submit 'Imagenes Recursivas', class: 'hollow button'%>
-						</div>
 						</div>
 					<% end %>
 
