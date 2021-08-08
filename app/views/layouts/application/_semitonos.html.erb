@@ -1,26 +1,36 @@
 <div class="grid-container">
-    <h5>Selecciona un filtro</h5>
-	<br>
+
 	  	<% if @picture.image.attached?%>
-			<%= form_with model: @picture, class:'grid-x grid-margin-x align-middle' do |form| %>							
-				<%= form.fields_for :variation do |f| -%>
-					<% Variation::FILTER_TYPES[0..8].in_groups_of(3).each do |group| %>
-	
+			<%= form_with model: @picture, class:'grid-x grid-padding-x align-middle' do |form| %>							
+				<%= form.fields_for :variation do |f| %>
+						
+							
 
-								<% group.each do |filter| %>
-								<div class="cell auto">								
-									<% if @picture.remaining_filters.include? filter %>
-										<%= f.hidden_field :filter_type, value: filter %>
-										<%=form.submit filter, class:"hollow button"  %>
-									<% else %>
-										<%= f.hidden_field :filter_type, value: filter %>
-										<%=form.submit filter, disabled: true, class:"hollow button secondary"  %>
-									<% end %>
-								</div>
-								<% end %>
+						<div class="grid-x grid-padding-x align-self-top">
+							<fieldset class="fieldset">
+								<legend>Selecciona una opción de semitonos</legend>	
+								<%= f.collection_radio_buttons('semitone', Variation::SEMITONES.map {|k,v| [v,k]}, :pop,:pop,checked: 'a')%>
+							</fieldset>
+						</div>
+												
+						<div class='cell auto'>
+							<%= f.label :mwidth_param, "Ancho", class: 'text-right middle white-font',for:'ancho'  %>
+						</div>
+						<div class='cell auto'>
+							<%= f.number_field :mwidth_param, id: 'ancho',placeholder:'min: 10, max: ancho/2',min:'10', class:'data-entry'%>
+						</div>
+						<div class='cell auto'>
+							<%= f.label :mheight_param, "Alto", class: 'text-right middle',for:'alto'%>
+						</div>
+						<div class='cell auto'>							
+								<%= f.number_field :mheight_param, id:'alto',placeholder:'min: 10, max: alto/2',min:'10', class:'data-entry' %>
+						</div>
 
+						
+						<div class='cell auto'>
+							<%= f.submit 'Semitonos', value: 'Semitonos', class: 'button hollow' %>
+						</div>
 	
-					<% end %>
 				<% end %>
 			<% end %>
 		<% end %>

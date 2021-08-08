@@ -72,9 +72,10 @@ class PicturesController < ApplicationController
     alpha = params[:picture][:variation][:alpha].to_f / 100
     coorext = params[:picture][:variation][:coorext]
     color = !params[:picture][:variation][:color].to_i.zero? 
+    semitone = params[:picture][:variation][:semitone]
     
     variation.component(r,g,b) if filter == 'Mica RGB'
-    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb,phrase,rotation,repeat,alpha,coorext,color)
+    variation.pdi_filter(filter,bright,mwidth,mheight,variation.rgb,phrase,rotation,repeat,alpha,coorext,color,semitone)
 
     respond_to do |wants|
       if @picture.update(picture_params)

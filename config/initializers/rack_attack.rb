@@ -61,5 +61,5 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
 
   Rails.logger.info "[Rack::Attack][Blocked] remote_ip: #{req.remote_ip}, path: #{req.path}, headers: #{request_headers.inspect}"
 
-  AdminMailer.rack_attack_notification(name, start, finish, request_id, req.remote_ip, req.path, request_headers).deliver_later
+  #AdminMailer.rack_attack_notification(name, start, finish, request_id, req.remote_ip, req.path, request_headers).deliver_later
 end
