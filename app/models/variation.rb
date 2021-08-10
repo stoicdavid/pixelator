@@ -1,5 +1,5 @@
 class Variation < ApplicationRecord
-  include BasicFilters, ConvolutionFilters, LetterFilters, WatermarkFilters, RecursiveFilters, SemitoneFilters
+  include BasicFilters, ConvolutionFilters, LetterFilters, WatermarkFilters, RecursiveFilters, SemitoneFilters, MaxMinFilters
   
   FILTER_TYPES = ['Gray1', 'Gray2','Gray3', 'Gray4','Gray5', 'Gray6','Gray7', 'Gray8','Gray9', 'Brillo', 'Mosaico',
     'Alto Contraste','Inverso','Mica RGB','Blur1','Blur2','Motion Blur','Bordes','Sharpen','Emboss',
@@ -92,7 +92,7 @@ class Variation < ApplicationRecord
   end
   
   
-  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0', phrase = '', rotation=false, repeat=false,transparent=1.0, coordinates='', color=false,semitone='a')
+  def pdi_filter(filter_asked, bright = 0, horizontal = 0, vertical = 0, c_rgb = '0 0 0', phrase = '', rotation=false, repeat=false,transparent=1.0, coordinates='', color=false,semitone='a',maxmin=0)
     
     # Método para aplicar filtros básicos o filtros de convolución
     # Se obtiene el método solicitiado de entre los disponibles en la constante FILTER_TYPES
@@ -135,6 +135,9 @@ class Variation < ApplicationRecord
     when "Semitonos"
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, horizontal, vertical,semitone)
       #im.write_to_file "pre123.jpg"
+    when "Max Min"
+      im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im, maxmin)
+      #im.write_to_file "pre123.jpg"      
     else
       im = self.send("apply_#{filter_asked.parameterize(separator:'_')}", im)
     end
