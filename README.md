@@ -163,6 +163,27 @@ La marca de agua acepta un texto abierto y se puede configurar de esta forma
 * Se puede seleccionar la opacidad de la imagen, default 50% alfa
 * Se puede hacer clic en una posición arbitraria de la imágen y en esa posición aparecerá la marca de agua.
 
+### Imágenes Recursivas
+
+Seleciona una imaten y se opera la misma imágen para producir una imagén nueva con imágenes de si misma
+
+* Opción en escala de grises - Esta opción genera 30 imágenes que ordena de menor brillo a mayor brillo y construye esta imágen.
+* Opción a color - en esta opción se coloca una mica con el color promedio de una región y se coloca la imagen resultanto en la región dada hasta recorrer toda la imágen
+
+### Semitonos
+
+se pueden seleccionar varias opciones de semitonos (3) mismas que fueron distribuidas en clase
+
+* Seleccionar la opción de semitono deseada.
+* Selecciona el ancho y largo si se desea cambiar el valor, aunque el programa da valores por omisión
+
+
+### Filtro Máximo y Mínimo
+
+Similar a los filtros de convolución, en este filtro se puede erosionar una imágen
+
+* Se puede seleccionar entre opción de máximo y mínimo.
+
 ### Estructura de la aplicación y clases principales
 
 Rails utiliza el patrón de arquitectura MVC, por lo que las clases principales las encontrarás en la carpeta
