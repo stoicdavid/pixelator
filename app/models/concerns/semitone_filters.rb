@@ -46,7 +46,7 @@ module SemitoneFilters
     images = {}
     ssize = (semitone == 'a' || semitone == 'b') ? 10 : 5 
     scale = ssize == 5 ? 50 : 25
-    scale2 = 255+25
+    scale2 = ssize == 5 ? 255+50 : 255 +25
     (0...ssize).each do |idx|
       if semitone == 'a'
         index = idx + 1
@@ -55,18 +55,15 @@ module SemitoneFilters
       else
         filename = "app/assets/images/semitonos/#{semitone+idx.to_s}.jpg"
         images[scale2 -= scale] = filename
+        images[0] = "app/assets/images/semitonos/#{semitone+idx.to_s}.jpg"
       end
     end
-    return images
+    return images.sort.to_h
   end
   
   def select_image2(color,images,semitone)
     color = color.clamp(0..255)
-    if semitone == 'a'
-      return images[images.keys.bsearch{|x| x>= color}]
-    else
-      return images[images.keys.bsearch{|x| x<= color}]
-    end
+    return images[images.keys.bsearch{|x| x>= color}]
   end
   
 end
