@@ -1,72 +1,8 @@
-<!-- inside app/views/welcome/index.html.erb -->  
-
-	<%# render :partial => 'applied_filters' %>
-<div class="grid-x grid-margin-x align-center-middle">
-	
-    <div class="cell auto">
-
-		<div class="card align-middle text-center">
-				<h5>Imagen Original</h5>
-					<% if @picture.image.attached? %>
-					Width:<%= @picture.image.metadata[:width] %>px, Height: <%= @picture.image.metadata[:height] %>px
-					<% end %>
-
-			<div class="card-section">
-
-					<% if @picture.image.attached? %>
-					<%= image_tag @picture.image, class:"image-box canvas", id:"canvas-original" %>
-					<% else %>
-
-					<h6>Por favor carga una imágen jpg o png no más allá de 5MB </h6>
-					<hr>
-						<%= form_with model: @picture, class:"" do |f| %>
-						<%= f.file_field :image, class: "hollow button",id:"upload" %>
-						<hr>
-						<%= f.submit "Cargar",{class: "hollow success button"}%>
-						<% end %>
-
-					<% end %>
-
-			</div>
-			<div class="card-section">
-				<br>
-			</div>
-		</div>
-	</div>
-
-    <div class="cell auto">
-
-		<% if @picture.variations.exists? %>
-		<div class="card align-middle text-center">
-
-	      <h5>Variación</h5>
-		  <% if @picture.image.attached? %>
-			Width:<%= @picture.image.metadata[:width] %>px, Height: <%= @picture.image.metadata[:height] %>px
-		  <% end %>
-
-		  <div class="card-section">
-			
-			<%= link_to "Abre imagen", html_image_path(@variation), target: "_blank" if @variation.big?%>
-
-			<%= @variation.image.download.html_safe if @variation.image.content_type == 'text/html' unless @variation.big? %>
-			
-			<%= image_tag @variation.image, class:"image-box canvas" if @variation.image.content_type.start_with? 'image' %>
-
-
-			
-		  </div>
-		  <div class="card-section">
-			<p>Filtro aplicado:<%= @variation.filter_type if @picture.variations.exists?%></p>
-		  </div>
-		</div>
-		<% end %>
-    </div>
+<div class="marketing-site-hero">
+  <div class="marketing-site-hero-content">
+    <h1>Bienvenido a PIXELATOR</h1>
+    <p class="subheader">Aquí podrás aplicar algunos filtros a tus imágenes favoritas</p>
+		<%= link_to "¡COMENZAR!",pictures_url,class:"round button" %>
+  </div>
 </div>
 
-<div class="grid-x">
-	<div class="cell auto">
-		<hr class="featurette-divider">		
-		<br>
-	</div>
-
-</div>

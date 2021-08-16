@@ -4,21 +4,30 @@ class PicturesController < ApplicationController
   # GET /pictures
   # GET /pictures.xml
   def index
-    @picture = Picture.first || Picture.new
 
-    respond_to do |wants|
-      wants.html # index.html.erb
-      wants.xml  { render :xml => @pictures }
-    end
+  #  @picture = Picture.first || Picture.new
+  #  if @picture.image.attached?
+  #    @picture.variations.build
+  #  end
+  #  
+  #  if @picture.variations.exists?
+  #    @variation = @picture.variations.find_by(id:params[:id]) || @picture.variations.last(2).first
+  #  end
+  #  
+  #  respond_to do |wants|
+  #    wants.html # index.html.erb
+  #    wants.xml  { render :xml => @pictures }
+  #  end
+  
+  @pictures = Picture.all
+  
   end
 
   # GET /pictures/1
   # GET /pictures/1.xml
   def show
-    respond_to do |wants|
-      wants.html # show.html.erb
-      wants.xml  { render :xml => @picture }
-    end
+    @picture = Picture.find(params[:id]) || Picture.first
+    @variation = @picture.variations.last
   end
 
   # GET /pictures/new
@@ -44,8 +53,15 @@ class PicturesController < ApplicationController
 
     respond_to do |wants|
       if @picture.save!
-        flash[:notice] = 'La imagen fue cargada exitosamente.'
-        wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
+        #puts "***********PROCESA THUMBNAIL************"
+        #ImageProcessing::Vips
+        #  .source(ActiveStorage::Blob.service.send(:path_for, @picture.image.key))
+        #  .resize_to_fill!(400, 400,crop: :attention)
+        #  .call!
+        #puts "***********THUMBNAIL PROCESADO************"          
+        #flash[:notice] = 'La imagen fue cargada exitosamente.'
+        #wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
+        wants.html { redirect_to @picture, notice: 'La imagen fue cargada exitosamente.' }
         wants.xml  { render :xml => @picture, :status => :created, :location => @picture }
       else
         wants.html { render :action => "new" }
@@ -80,12 +96,15 @@ class PicturesController < ApplicationController
 
     respond_to do |wants|
       if @picture.update(picture_params)
-        flash[:notice] = "El filtro #{filter} fue aplicado exitosamente."
-        wants.html { redirect_to(:controller=>'welcome',:action =>:index,:id=> variation.id) }
+        #flash[:notice] = "El filtro #{filter} fue aplicado exitosamente."
+        #wants.html { redirect_to(:controller=>'welcome',:action =>:index,:id=> variation.id) }
+        wants.html { redirect_to @picture, notice: "El filtro #{filter} fue aplicado exitosamente"}
         wants.xml  { head :ok }
       else
-        wants.html { redirect_to(:controller=>'welcome',:action =>:index)}
-        wants.xml  { render :xml => @picture.errors, :status => :unprocessable_entity }
+        #wants.html { redirect_to(:controller=>'welcome',:action =>:index)}
+        #wants.xml  { render :xml => @picture.errors, :status => :unprocessable_entity }
+        wants.html { render :edit, status: :unprocessable_entity }
+        wants.json { render json: @picture.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -98,7 +117,8 @@ class PicturesController < ApplicationController
     @picture.destroy
 
     respond_to do |wants|
-      wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
+      #wants.html { redirect_to(:controller=>'welcome',:action =>:index) }
+      wants.html {redirect_to pictures_url, alert: "Product was successfully destroyed."}
       wants.xml  { head :ok }
     end
   end

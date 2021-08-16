@@ -1,0 +1,37 @@
+<%= link_to button_icon('Carga una nueva imágen','upload'), new_picture_path, class:"clear button" %>
+<hr class="featurette-divider">
+<h5>Imágenes a procesar</h5>
+<h6>Selecciona una imagen</h6>
+
+<hr class="featurette-divider">
+
+<% @pictures.in_groups_of(3,false).each do |group| %>
+	<div class="grid-x grid-margin-x">
+
+	<% group.each do |picture| %>
+	
+		<div class="cell auto">
+			<div class="card text-center">
+
+				<div class="card-section">					
+					<%= link_to image_tag(picture.image.variant(resize_to_fill:[360,240,crop: :attention]).processed, 
+					class:"image-box"), picture, class:"thumbnail canvas  " %>
+				</div>
+				<div class="card-section align-top grid-x align-center">
+					<div class="cell auto">
+					Width:<%= picture.image.metadata[:width] %>px, Height: <%= picture.image.metadata[:height] %>px						
+					</div>
+
+	        <%# link_to 'Edit', edit_picture_path(picture) %>
+	        
+					<div class="cell auto small-2">
+						<%= link_to icon('x-lg',class:"clear button alert btn-circular"), picture, method: :delete, data: { confirm: 'Are you sure?' } %>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	<% end %>
+	</div>	
+<% end %>

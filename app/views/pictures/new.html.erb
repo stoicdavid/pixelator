@@ -1,0 +1,24 @@
+<div class="grid-x grid-margin-x align-center-middle">
+    <div class="cell auto">
+
+		<div class="card align-middle text-center">
+				<h5>Carga una imágen a procesar</h5>
+					<% if @picture.image.attached? %>
+					Width:<%= @picture.image.metadata[:width] %>px, Height: <%= @picture.image.metadata[:height] %>px
+					<% end %>
+			<div class="card-section">
+					<% if @picture.image.attached? %>
+					<%= image_tag @picture.image, class:"image-box canvas", id:"canvas-original" %>
+					<% else %>
+					<h6>Por favor carga una imágen jpg o png no más allá de 5MB </h6>
+					<hr>
+						<%= form_with model: @picture, class:"" do |f| %>
+						<%= f.file_field :image, class: "hollow button",id:"upload" %>
+						<hr>
+						<%= f.submit "Cargar",{class: "hollow success button"}%>
+						<% end %>
+					<% end %>
+			</div>
+		</div>
+	</div>
+</div>

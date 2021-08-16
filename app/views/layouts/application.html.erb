@@ -33,9 +33,9 @@
 			<%= content_tag :div,class:"#{behavior} position-bottom alt-menu text-center grid-container full is-closed", id:"offCanvas#{k}",'data-off-canvas'=>'' do %>
 				<%= render :partial => "layouts/application/#{k.underscore}" %>
 			<% end %>
-		<% end unless @picture.id.nil? %>
+		<% end unless @picture.nil? || @picture.id.nil? %>
 
 		</div>
-		<%= render('layouts/application/bottom_bar') unless @picture.id.nil? %>
+		<%= render('layouts/application/bottom_bar') unless @picture.nil? || @picture.id.nil? %>
 	</body>
 </html>

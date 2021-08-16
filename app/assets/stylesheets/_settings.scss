@@ -349,7 +349,7 @@ $callout-link-tint: 30%;
 $card-background: $white;
 $card-font-color: $body-font-color;
 $card-divider-background: $light-gray;
-$card-border: 1px solid $light-gray;
+$card-border: 0px solid $light-gray;
 $card-shadow: none;
 $card-border-radius: $global-radius;
 $card-padding: $global-padding;
@@ -835,12 +835,17 @@ $tab-content-padding: 1rem;
 // 52. Thumbnail
 // -------------
 
-$thumbnail-border: 4px solid $white;
+$thumbnail-border: 0px solid $white;
 $thumbnail-margin-bottom: $global-margin;
-$thumbnail-shadow: 0 0 0 1px rgba($black, 0.2);
-$thumbnail-shadow-hover: 0 0 6px 1px rgba($primary-color, 0.5);
+//$thumbnail-shadow: 2px 0px 10px 2px rgba($white, 0.3);
+$thumbnail-shadow: 3px 3px 7px 3px rgb(0, 0, 0) inset ,
+            			-3px -3px 10px 0.5px rgb(136, 137, 141) inset;
+//$thumbnail-shadow: -20px -20px 60px #202020, 20px 20px 60px #2c2c2c;
+//$thumbnail-shadow-hover: 0 0 6px 4px rgba($primary-color, 0.9);
+$thumbnail-shadow-hover: -3px -3px 10px 0.5px rgb(106, 107, 111),
+            							3px 3px 10px 3px rgb(0, 0, 0);
 $thumbnail-transition: box-shadow 200ms ease-out;
-$thumbnail-radius: $global-radius;
+$thumbnail-radius: 8px;
 
 // 53. Title Bar
 // -------------
